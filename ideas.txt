@@ -1,0 +1,7 @@
+Spam detection and prevention
+
+Accounts
+
+Using a sql database instead of JSON -- also, pagination, so it doesn't load all the messages at once (so far not scaleable)
+
+Markdown
