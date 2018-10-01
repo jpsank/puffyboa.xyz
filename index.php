@@ -39,13 +39,17 @@ function displayMessages($DATA) {
 
 $fName = 'data.json';
 
+$charLimit = 2000;
+
 // Did the user submit a message
 if (isset($_POST['text'])) {
 	if ($_POST['text'] != '') {
-		// Post message to JSON
-		$DATA = readJSON($fName);
-		$DATA[] = [$_POST['text'],time()];
-		writeJSON($fName, $DATA);
+		if (strlen($_POST['text']) <= $charLimit) {
+			// Post message to JSON
+			$DATA = readJSON($fName);
+			$DATA[] = [$_POST['text'],time()];
+			writeJSON($fName, $DATA);
+		}
 	}
 	// Reset
 	header('Location: index.php');
