@@ -2,6 +2,7 @@
 body {
 	font-family: "Helvetica";
 	font-size: large;
+	overflow-x: hidden;
 }
 
 
