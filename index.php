@@ -41,8 +41,8 @@ $fName = 'data.json';
 
 // Did the user submit a message
 if (isset($_POST['text'])) {
-	// Post message to JSON
 	if ($_POST['text'] != '') {
+		// Post message to JSON
 		$DATA = readJSON($fName);
 		$DATA[] = [$_POST['text'],time()];
 		writeJSON($fName, $DATA);
@@ -72,7 +72,7 @@ if (isset($_POST['text'])) {
 	<section id="main">
 
 		<form id="form" method="post">
-		    <input type="text" name="text" placeholder="type something">
+		    <input type="text" name="text" placeholder="type something" maxlength="500">
 		    <input type="submit">
 		</form>
 
