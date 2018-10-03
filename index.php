@@ -26,18 +26,20 @@ if(isset($_FILES["file"])) {
 	while (file_exists($target_file . $index)) {
 		$index++;
 	}
-	$target_file = $target_file . $index;
+	if ($index < 100) {  // TEMPORARY FILE LIMIT (just in case)
+		$target_file = $target_file . $index;
 
 
-	if ($tmp_file == '') {
-		$error = "Error uploading file";
-	}
-	if ($_FILES["file"]["error"] == UPLOAD_ERR_INI_SIZE) {
-		$error = "File too large";
-	}
+		if ($tmp_file == '') {
+			$error = "Error uploading file";
+		}
+		if ($_FILES["file"]["error"] == UPLOAD_ERR_INI_SIZE) {
+			$error = "File too large";
+		}
 
-	if (!isset($error)) {
-		store_uploaded_image($tmp_file, $target_file, 500);
+		if (!isset($error)) {
+			store_uploaded_image($tmp_file, $target_file, 500);
+		}
 	}
 }
 ?>
