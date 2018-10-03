@@ -1,0 +1,121 @@
+
+body {
+	font-family: "Raleway";
+	font-size: large;
+	margin: 2vw;
+	overflow-x: hidden;
+}
+
+#jumbo {
+	text-align: center;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+#jumbo h1 {
+	
+}
+#jumbo p {
+	
+}
+
+
+#images {
+	margin-top: 100px;
+	display: flex;
+	flex-wrap: wrap;
+}
+#images div.img {
+	padding: 1vw;
+}
+#images div.img img {
+	max-width: 400px;
+	max-height: 400px;
+	object-fit: contain;
+}
+@media (max-width: 600px) {
+	#images {
+		justify-content: center;
+	}
+	#images img {
+		max-width: 300px;
+		max-height: 300px;
+	}
+}
+
+
+
+
+
+
+
+/*#form {
+	text-align: center;
+}
+#form p {
+	margin: 0px;
+	margin-bottom: 10px;
+}
+#form input {
+	padding: 20px;
+	font-family: "Source Sans Pro";
+}
+#form input#fileToUpload {
+	display: block;
+}
+#form input#fileToUpload {
+}
+#form input[name="submit"] {
+	display: block;
+	font-size: .8em;
+	border: 1px solid lightgrey;
+	padding: 2px 20px;
+	border-radius: 10px;
+	outline: none;
+}
+#form input[name="submit"]:active {
+	background-color: lightgrey;
+}*/
+
+#drop-area {
+	border: 2px dashed #ccc;
+	border-radius: 20px;
+	width: 600px;
+	font-family: sans-serif;
+	margin: 20px auto;
+	padding: 100px;
+	text-align: center;
+}
+@media (max-width: 800px) {
+	#drop-area {
+		width: auto;
+	}
+}
+#drop-area.highlight {
+	border-color: purple;
+}
+.upload-form {
+	margin-bottom: 10px;
+}
+#gallery {
+	margin-top: 10px;
+}
+#gallery img {
+	width: 150px;
+	margin-bottom: 10px;
+	margin-right: 10px;
+	vertical-align: middle;
+}
+.button {
+	display: inline-block;
+	padding: 10px;
+	background: #ccc;
+	cursor: pointer;
+	border-radius: 5px;
+	border: 1px solid #ccc;
+}
+.button:hover {
+	background: #ddd;
+}
+#fileElem {
+	display: none;
+}
