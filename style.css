@@ -56,6 +56,9 @@ section {
 #ledger div.message:nth-child(odd) {
 	background-color: #fff1f1;
 }
+#ledger div.message p {
+	word-wrap: break-word;
+}
 #ledger div.message p.t {
 	float: right;
 }
