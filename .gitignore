@@ -1,10 +1,6 @@
 
 .DS_Store
-<<<<<<< HEAD
-ideas.txt
 data.json
-=======
-upload.php
-upload2.php
->>>>>>> opensnap/master
+
+uploads/*
 
