@@ -100,3 +100,10 @@ footer a img {
 section#donate {
 	float: right;
 }
+
+@media (max-width: 800px) {
+	section#donate {
+		float: none;
+		margin: 0 10vw;
+	}
+}
