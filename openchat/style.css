@@ -1,0 +1,72 @@
+
+body {
+	font-family: "Helvetica";
+	font-size: large;
+	overflow-x: hidden;
+}
+
+
+section {
+}
+
+#jumbo {
+	text-align: center;
+	background-color: #ffe1e1;
+	padding: 1px;
+}
+#jumbo h1 {
+}
+#jumbo p {
+}
+
+#main {
+	padding: 20px;
+}
+
+#form {
+	text-align: center;
+}
+#form input {
+	margin: 10px;
+}
+#form input[type="text"] {
+	font-size: 1.1em;
+	width: 100%;
+	display: block;
+	padding: 10px;
+}
+#form input[type="submit"] {
+	font-size: .8em;
+	border: 1px solid lightgrey;
+	padding: 2px 20px;
+	border-radius: 10px;
+	outline: none;
+}
+#form input[type="submit"]:active {
+	background-color: lightgrey;
+}
+
+#ledger {
+}
+#ledger div.message {
+	padding: 5px 10px;
+	margin: 0px;
+	background-color: white;
+}
+#ledger div.message:nth-child(odd) {
+	background-color: #fff1f1;
+}
+#ledger div.message img {
+	font-size: .7em;
+}
+#ledger div.message p {
+	word-wrap: break-word;
+}
+#ledger div.message p.t {
+	float: right;
+}
+@media (max-width: 800px) {
+	#ledger div.message p.t {
+		float: none;
+	}
+}

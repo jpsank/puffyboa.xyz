@@ -4,3 +4,6 @@ data.json
 
 uploads/*
 
+openchat/uploads/*
+openchat/dbconf.php
+
