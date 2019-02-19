@@ -154,6 +154,7 @@ if (isset($_POST['text'])) {
 			$handler->postMessage();
 		} else {
 			echo "Message exceeds 2000 character limit.";
+			die();
 		}
 	}
 	// Reset
@@ -181,7 +182,7 @@ if (isset($_POST['text'])) {
 	<section id="main">
 
 		<form id="form" enctype="multipart/form-data" method="post">
-		    <input type="text" name="text" placeholder="type something" maxlength="2000">
+		    <input type="text" name="text" placeholder="type something" maxlength="1000">
 		    <input name="userfile" accept="image/*" type="file" />
 		    <input type="submit">
 		</form>
