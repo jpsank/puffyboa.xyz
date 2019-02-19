@@ -49,6 +49,9 @@ section {
 #ledger {
 }
 #ledger div.message {
+	padding: 0px;
+}
+#ledger div.message {
 	padding: 5px 10px;
 	margin: 0px;
 	background-color: white;
@@ -57,7 +60,9 @@ section {
 	background-color: #fff1f1;
 }
 #ledger div.message img {
-	font-size: .7em;
+	font-size: .8em;
+	color: grey;
+	max-width: 100%;
 }
 #ledger div.message p {
 	word-wrap: break-word;
@@ -68,5 +73,9 @@ section {
 @media (max-width: 800px) {
 	#ledger div.message p.t {
 		float: none;
+		font-size: .8em;
+	}
+	#main {
+		padding: 1vw;
 	}
 }

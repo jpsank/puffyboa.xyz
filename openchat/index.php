@@ -46,7 +46,7 @@ class DBHandler {
 
 		// Fetch messages from database
 
-		$sql = "SELECT id, message, post_date, has_attachment FROM Messages ORDER BY post_date DESC";
+		$sql = "SELECT * FROM Messages ORDER BY post_date DESC";
 		$stmt = $this->conn->prepare($sql);
 
 		$this->data = array();
@@ -80,7 +80,7 @@ class DBHandler {
 					}
 				}
 			}
-			$html = "<div class='message'>";
+			$html = "<div id='$id' class='message'>";
 			$html .= "<p class='t'>$t $u ago</p>";
 			$html .= "<p class='m'>$message</p>";
 			if ($has_attachment) {
@@ -89,10 +89,8 @@ class DBHandler {
 				$finfo = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $file_path);
 				if (substr($finfo,0,4) == "text") {
 					$file_text = file_get_contents($file_path);
-					$html .= "<img src='$file_path' alt='$file_text'>";
-				} else {
-					$html .= "<img src='$file_path'>";
 				}
+				$html .= "<img src='$file_path' alt='$file_text'>";
 			}
 			$html .= "</div>";
 			echo $html;
@@ -100,7 +98,7 @@ class DBHandler {
 	}
 
 	function postMessage() {
-		$text = $_POST['text'];
+		$text = $this->conn->quote($_POST['text']);
 		$time = strftime("%Y-%m-%d %H:%M:%S",time());
 		if ($_FILES["userfile"]["error"] == UPLOAD_ERR_NO_FILE) {
 			$attached = 0;
@@ -108,7 +106,7 @@ class DBHandler {
 			$attached = 1;
 		}
 
-		$sql = "INSERT INTO Messages (message, post_date, has_attachment) VALUES ('$text','$time',$attached);";
+		$sql = "INSERT INTO Messages (message, post_date, has_attachment) VALUES ($text,'$time',$attached);";
 		$this->conn->exec($sql);
 
 		if ($attached) {
@@ -154,6 +152,8 @@ if (isset($_POST['text'])) {
 	if ($_POST['text'] != '') {
 		if (strlen($_POST['text']) <= $charLimit) {
 			$handler->postMessage();
+		} else {
+			echo "Message exceeds 2000 character limit.";
 		}
 	}
 	// Reset
@@ -167,7 +167,7 @@ if (isset($_POST['text'])) {
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" type="text/css" href="style.css">
-	<title>OpenText - puffyboa.xyz</title>
+	<title>OpenChat - puffyboa.xyz</title>
 	<link rel="shortcut icon" href="img/favicon.png" />
 </head>
 
@@ -181,7 +181,7 @@ if (isset($_POST['text'])) {
 	<section id="main">
 
 		<form id="form" enctype="multipart/form-data" method="post">
-		    <input type="text" name="text" placeholder="type something" maxlength="500">
+		    <input type="text" name="text" placeholder="type something" maxlength="2000">
 		    <input name="userfile" accept="image/*" type="file" />
 		    <input type="submit">
 		</form>
@@ -194,3 +194,21 @@ if (isset($_POST['text'])) {
 
 </body>
 </html>
+
+<script>
+	
+	function setReply(id) {
+		let input = document.querySelector('input[name="text"]');
+		input.value = "@" + id;
+	}
+
+	function toggleDisplay(id) {
+		let img = document.querySelector(`div.message[id="${id}"] img`);
+		if (img.style.display === "block") {
+			img.style.display = "none";
+		} else {
+			img.style.display = "block";
+		}
+	}
+
+</script>
