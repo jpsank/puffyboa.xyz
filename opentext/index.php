@@ -63,7 +63,7 @@ if (isset($_POST['text'])) {
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" type="text/css" href="style.css">
 	<title>OpenText - puffyboa.xyz</title>
-	<link rel="shortcut icon" href="img/favicon.png" />
+	<link rel="shortcut icon" href="../img/favicon.png" />
 </head>
 
 <body>

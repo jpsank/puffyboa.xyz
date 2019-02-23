@@ -2,30 +2,32 @@
 body {
 	background-color: white;
 	font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-	margin: 0px;
+	margin: 0;
 	font-size: large;
+	overflow-x: hidden;
 }
 
+
 h1 {
-	font-family: 'Raleway';
+	font-family: 'Raleway', sans-serif;
 }
 
 .jumbotron h1 {
-	font-family: Monaco;
+	font-family: Monaco, sans-serif;
 }
 .jumbotron {
 	position: absolute;
 	font-size: 3.2vw;
 	text-align: center;
 	/*background-color: white;*/
-	padding: 10px 0px;
+	padding: 10px 0;
 	margin: 20px;
 }
 @media (max-width: 480px) {
     .jumbotron {
     	width: 100vw;
-    	padding: 0px 0px;
-		margin: 0px;
+    	padding: 0 0;
+		margin: 0;
     	font-size: 1em;
     }
 }
@@ -38,6 +40,10 @@ div#main {
 	margin: 1vw;
 }
 
+canvas#canvas-of-life {
+}
+
+/*
 table#table-of-life {
 	background-color: white;
 	width: 100%;
@@ -59,6 +65,7 @@ table#table-of-life tr td {
 table#table-of-life tr td.on {
 	background-color: black;
 }
+*/
 
 section {
 	min-height: 450px;
@@ -79,7 +86,6 @@ section#projects ul li {
 	padding: 1vw;
 }
 section#projects ul li a {
-	display: block;
 	font-size: 1.2em;
 	padding-bottom: 10px;
 }
@@ -106,4 +112,9 @@ section#donate {
 		float: none;
 		margin: 0 10vw;
 	}
+}
+
+
+canvas#fidget {
+	float: right;
 }

@@ -47,7 +47,7 @@
 			?>
 	</div>
 
-	<script src="script.js"></script>
+	<script src="conway.js"></script>
 
 </body>
 </html>

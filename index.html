@@ -1,11 +1,10 @@
-
-<html>
+<!DOCTYPE html>
+<html lang="en">
 	<head>
 		<link rel="stylesheet" type="text/css" href="style.css">
-		<script src="script.js"></script>
 		<title>puffyboa.xyz</title>
 		<link href="https://fonts.googleapis.com/css?family=Raleway|Source Sans Pro" rel="stylesheet">
-		<link rel="shortcut icon" href="img/fidgetspidger.png" />
+		<link rel="shortcut icon" href="assets/img/favicon.png" />
 	</head>
 	<body>
 		<nav>
@@ -19,23 +18,35 @@
 				<h1>puffyboa.xyz</h1>
 			</div>
 
-			<table id="table-of-life">
-				<tbody></tbody>
-			</table>
+			<!--<table id="table-of-life">-->
+				<!--<tbody></tbody>-->
+			<!--</table>-->
+			<canvas id="canvas-of-life">
+			</canvas>
+
+			<canvas id="fidget" width="400px" height="400px">
+			</canvas>
 
 			<section id="projects">
 				<h1>Projects</h1>
 				<ul>
 					<li><p><a href="/openchat/">OpenChat</a> a NEW and IMPROVED open ledger for posting anonymous public messages</p></li>
 					<li><p><a href="/hha-grades/">HHA Grades</a> easy grade checker for Haas Hall scholars</p></li>
+					<li><p><a href="/hha-calendar/">HHA Calendar</a> easy access calendar and lunch menu for Haas Hall scholars</p></li>
 					<li><p><a href="/lucas_gifs/">Lucas Gifs</a> something (terrible) from middle school</p></li>
 				</ul>
 			</section>
 
 			<footer>
-				<a href="https://github.com/puffyboa/"><img src="img/github.png"></a></li>
+				<a href="https://github.com/puffyboa/"><img src="assets/img/github.png"></a>
 			</footer>
 		</div>
+
 	</body>
+
+	<script type="module" src="assets/js/conway.js"></script>
+	<script type="module" src="assets/js/fidget.js"></script>
+	<script type="module" src="assets/js/script.js"></script>
+
 </html>
 

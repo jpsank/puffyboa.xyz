@@ -1,0 +1,39 @@
+body {
+
+}
+
+#header {
+	padding: 10px 0;
+    float: left;
+	margin-bottom: 20px;
+    font-family: Monaco, sans-serif;
+}
+#header a img {
+    width: 40px;
+}
+
+div#main {
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+}
+
+div#main iframe {
+    border-width: 0;
+    width: 50%;
+    height: 575px;
+}
+div#main embed {
+    width: 50%;
+    height: 575px;
+}
+
+@media (max-width: 1200px) {
+    div#main iframe {
+        width: 600px;
+    }
+    div#main embed {
+        width: 600px;
+    }
+}

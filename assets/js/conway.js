@@ -51,7 +51,6 @@ class GameOfLife {
 				this.array[p[0]][p[1]] = 0;
 			}
 		}
-		//console.log(this.array);
 	}
 }
 
@@ -63,37 +62,70 @@ function createMatrix(rows,cols) {
 	return matrix;
 }
 
-var cols = Math.round(screen.width/24); // default 60
-if (cols > 60) {cols = 60;} else if (cols < 20) {cols = 20;}
-const rows = Math.round(cols/2);
-//console.log(cols,rows);
+let cols = Math.round(screen.width/24); // default 60
+cols = cols > 80 ? 80 : cols < 20 ? 20 : cols;
+let rows = Math.round(screen.height/30);
+rows = rows > cols ? cols : rows;
+
 const game = new GameOfLife(createMatrix(rows,cols));
 
-function updateTableBasedOn(arr) {
-	const tbody = document.querySelector('#table-of-life tbody');
-	tbody.innerHTML = '';
+// function updateTableBasedOn(arr) {
+// 	const tbody = document.querySelector('#table-of-life tbody');
+// 	tbody.innerHTML = '';
+// 	for (let r=0; r<arr.length; r++) {
+// 		let str = '<tr>';
+// 		for (let c=0; c<arr[r].length; c++) {
+// 			if (arr[r][c] === 0) {
+// 				str += `<td></td>`
+// 			} else if (arr[r][c] === 1){
+// 				str += '<td class="on"></td>'
+// 			}
+// 		}
+// 		str += '</tr>\n';
+// 		tbody.innerHTML += str;
+// 	}
+// }
+
+
+function resize() {
+	canvas.width = canvas.parentElement.offsetWidth;
+	canvas.height = canvas.width*(game.array.length/game.array[0].length);
+}
+
+function drawCanvasBasedOn(arr) {
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	const tileSizeX = canvas.width/arr[0].length;
+	const tileSizeY = canvas.height/arr.length;
 	for (let r=0; r<arr.length; r++) {
-		let str = '<tr>';
 		for (let c=0; c<arr[r].length; c++) {
 			if (arr[r][c] === 0) {
-				str += `<td></td>`
-			} else if (arr[r][c] === 1){
-				str += '<td class="on"></td>'
+				ctx.strokeStyle = "lightgrey";
+				ctx.beginPath();
+				ctx.rect(c*tileSizeX,r*tileSizeY,tileSizeX,tileSizeY);
+				ctx.stroke();
+			} else {
+				ctx.fillStyle = "black";
+				ctx.beginPath();
+				ctx.rect(c*tileSizeX,r*tileSizeY,tileSizeX,tileSizeY);
+				ctx.fill();
 			}
 		}
-		str += '</tr>\n';
-		tbody.innerHTML += str;
 	}
 }
-function draw() {
+
+const canvas = document.getElementById("canvas-of-life");
+resize();
+const ctx = canvas.getContext("2d");
+
+function loop() {
 	game.step();
-	updateTableBasedOn(game.array);
-	window.setTimeout(draw,100);
+	drawCanvasBasedOn(game.array);
 }
 
 function setup() {
-	var o = Math.round(rows/2);
-	game.toggle([[o,o],[o+1,o],[o-1,o],[o+1,o+1],[o,o-1]])
-	draw();
+	// set up initial pattern
+	const o = Math.round(rows/2);
+	game.toggle([[o,o],[o+1,o],[o-1,o],[o+1,o+1],[o,o-1]]);
 }
-window.onload = setup;
+
+export {setup, loop, resize};
