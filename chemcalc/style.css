@@ -1,0 +1,47 @@
+body {
+    margin: 20px;
+    font-size: large;
+    font-family: serif;
+}
+
+#jumbo {
+    text-align: center;
+}
+
+#form {
+    display: flex;
+    border: 1px solid black;
+    border-bottom: none;
+    margin-bottom: 0;
+}
+#form input[type="text"] {
+    width: 100%;
+    height: 70px;
+    padding: 20px;
+    border: none;
+    font-size: 1em;
+}
+#form input[type="text"]:focus{
+    outline: none;
+}
+#form input[type="submit"] {
+    font-size: .8em;
+    border: none;
+    border-radius: 0;
+    margin: 0;
+    padding: 2px 20px;
+    outline: none;
+    cursor: pointer;
+}
+
+#answer {
+    padding: 20px;
+    height: 450px;
+    font-size: 1em;
+    border: 1px solid black;
+    border-top: none;
+}
+#answer pre {
+    width: 100%;
+    white-space: pre-wrap;
+}
