@@ -17,22 +17,26 @@ function store_uploaded_image($file, $target_file, $max_img_dimens) {
 
 }
 
-require_once('dbconf.php');
+require_once('../dbconf.php');
 
 class DBHandler {
 	public $conn;
+    public $dbname;
 	public $data;
 
-	function __construct($conn) {
+	function __construct($conn, $dbname) {
 		$this->conn = $conn;
+        $this->dbname = $dbname;
 	}
 
 	function init() {
 
 		// Create database if not already created
 
-		$sql = "CREATE DATABASE IF NOT EXISTS openchat";
-		$this->conn->exec($sql);
+        $sql = "CREATE DATABASE IF NOT EXISTS " . $this->dbname;
+        $this->conn->exec($sql);
+        $sql = "USE " . $this->dbname;
+        $this->conn->exec($sql);
 
 		// Create table if not already created
 
@@ -137,7 +141,7 @@ class DBHandler {
 }
 
 $pdo = new PDO($driver, $user, $pass, $attr);
-$handler = new DBHandler($pdo);
+$handler = new DBHandler($pdo, "openchat");
 $handler->init();
 
 // } catch (PDOException $e) {
