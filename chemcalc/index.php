@@ -181,7 +181,7 @@ class Molecule {
         foreach ($this->constituents as $atom) {
             $name = $atom->elem['name'];
             $atomic_mass = $atom->elem['atomic_mass'];
-            array_push($props, "($name $atomic_mass g x $atom->num)");
+            array_push($props, "($name " . $atomic_mass . "g x $atom->num)");
         }
         $string = join(" + ", $props);
         return $string;
