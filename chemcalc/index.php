@@ -340,7 +340,7 @@ function prettyPrint($dict) {
     $max = max($lengths);
     foreach ($dict as $key => $val) {
         $key = str_pad($key, $max);
-        echo "<pre>$key : $val</pre>";
+        echo "<div><pre class='key'>$key : </pre><pre class='val'>$val</pre></div>";
     }
 }
 
@@ -379,7 +379,8 @@ function prettyPrint($dict) {
 
     <form id="form" method="get">
         <input type="text" name="input" autocomplete="off" spellcheck="false"
-               placeholder="chemical equation or molecule" maxlength="1000">
+               placeholder="chemical equation or molecule" maxlength="1000"
+               value="<?php echo str_replace("%2B", "+", $_GET['input']); ?>">
         <input type="submit">
     </form>
 
@@ -415,7 +416,7 @@ function prettyPrint($dict) {
                         $dict["Entropy of formation"] = $molecule->getEntropy() . " J/molK";
                         $dict["Gibbs free energy of formation"] = $molecule->getGibbs() . " kJ/mol";
                     }
-                    echo "<pre>" . $molecule->getFormula() . "</pre>";
+                    echo "<div><pre>" . $molecule->getFormula() . "</pre></div>";
                     prettyPrint($dict);
                 }
             }

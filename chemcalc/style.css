@@ -45,12 +45,16 @@ body {
 
 #answer {
     padding: 20px;
-    height: 420px;
     font-size: 1em;
     border: 1px solid black;
     border-top: none;
 }
-#answer pre {
-    width: 100%;
+#answer div {
+    display: flex;
+}
+#answer div pre.key {
+}
+#answer div pre.val {
     white-space: pre-wrap;
 }
+
