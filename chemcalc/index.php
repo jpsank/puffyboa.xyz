@@ -363,7 +363,7 @@ function prettyPrint($dict) {
     <p>Calculate the properties for all your chemical equations</p>
     <p>i.e.
     <?php
-        $examples = ["NaOH + HCl = NaCl + H2O","H2O","3Fe2O3 + CO = CO2 + 2Fe3O4","C2H6"];
+        $examples = ["NaOH + HCl = NaCl + H2O","H2O","3Fe2O3 + CO = CO2 + 2Fe3O4","C2H6", "H2O (g) = H2O (l)"];
 
         $output = [];
         foreach ($examples as $example) {
