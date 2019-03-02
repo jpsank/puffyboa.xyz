@@ -245,11 +245,11 @@ class Equation {
     function getEnthalpy() {
         $answer = 0;
         foreach ($this->reactants as $mol) {
-            if ($mol->getEnthalpy() == false) {return "N/A";}
+            if ($mol->getEnthalpy() === false) {return "N/A";}
             $answer -= $mol->num * $mol->getEnthalpy();
         }
         foreach ($this->products as $mol) {
-            if ($mol->getEnthalpy() == false) {return "N/A";}
+            if ($mol->getEnthalpy() === false) {return "N/A";}
             $answer += $mol->num * $mol->getEnthalpy();
         }
         return $answer;
@@ -257,11 +257,11 @@ class Equation {
     function getEntropy() {
         $answer = 0;
         foreach ($this->reactants as $mol) {
-            if ($mol->getEntropy() == false) {return "N/A";}
+            if ($mol->getEntropy() === false) {return "N/A";}
             $answer -= $mol->num * $mol->getEntropy();
         }
         foreach ($this->products as $mol) {
-            if ($mol->getEntropy() == false) {return "N/A";}
+            if ($mol->getEntropy() === false) {return "N/A";}
             $answer += $mol->num * $mol->getEntropy();
         }
         return $answer;
@@ -269,11 +269,11 @@ class Equation {
     function getGibbs() {
         $answer = 0;
         foreach ($this->reactants as $mol) {
-            if ($mol->getGibbs() == false) {return "N/A";}
+            if ($mol->getGibbs() === false) {return "N/A";}
             $answer -= $mol->num * $mol->getGibbs();
         }
         foreach ($this->products as $mol) {
-            if ($mol->getGibbs() == false) {return "N/A";}
+            if ($mol->getGibbs() === false) {return "N/A";}
             $answer += $mol->num * $mol->getGibbs();
         }
         return $answer;
@@ -294,7 +294,7 @@ class Equation {
     }
     function getGibbsBehavior() {
         $gibbs = $this->getGibbs();
-        if ($gibbs == false) {
+        if ($gibbs === false) {
             return "N/A";
         }
         if ($gibbs > 0) {
@@ -307,7 +307,7 @@ class Equation {
     }
     function getEntropyBehavior() {
         $entropy = $this->getEntropy();
-        if ($entropy == false) {
+        if ($entropy === false) {
             return "N/A";
         }
         if ($entropy > 0) {
