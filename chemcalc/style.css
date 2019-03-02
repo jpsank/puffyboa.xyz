@@ -7,6 +7,15 @@ body {
 #jumbo {
     text-align: center;
 }
+#jumbo p a {
+    border: 1px solid grey;
+    padding: 5px;
+    text-decoration: none;
+    color: grey;
+}
+#jumbo p a:hover {
+    color: black;
+}
 
 #form {
     display: flex;
