@@ -94,6 +94,39 @@ function mouseMove(e) {
     }
 }
 
+function touchStart(e) {
+    drag = true;
+}
+function touchEnd(e) {
+    drag = false;
+}
+function touchMove(e) {
+    if (e.touches) {
+        if (e.touches.length === 1) {
+            const touch = e.touches[0];
+            let touchX = touch.offsetX;
+            let touchY = touch.offsetY;
+            if (drag) {
+                if ((fidget.x-fidget.size < touchX < fidget.x+fidget.size && fidget.y-fidget.size < touchY < fidget.y+fidget.size)) {
+                    let x;
+                    let y;
+                    if (touchY > fidget.y) {
+                        x = e.movementX;
+                    } else {
+                        x = -e.movementX;
+                    }
+                    if (touchX > fidget.x) {
+                        y = -e.movementY;
+                    } else {
+                        y = e.movementY;
+                    }
+                    fidget.accel = (x+y)/100;
+                }
+            }
+        }
+    }
+}
+
 function resize() {
     canvas.width = 120+window.innerWidth/5;
 	canvas.height = 120+window.innerWidth/5;
@@ -107,6 +140,10 @@ function setup() {
     canvas.addEventListener('mouseup', mouseUp, false);
     canvas.addEventListener ("mouseout", mouseOut, false);
     canvas.addEventListener('mousemove', mouseMove, false);
+
+    canvas.addEventListener('touchstart', touchStart, false);
+    canvas.addEventListener('touchend', touchEnd, false);
+    canvas.addEventListener('touchmove', touchMove, false);
     resize();
 }
 

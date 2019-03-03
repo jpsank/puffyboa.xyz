@@ -86,6 +86,7 @@ class DBHandler {
 				$file_path = 'uploads/' . $id;
 
 				$finfo = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $file_path);
+				$file_text = "";
 				if (substr($finfo,0,4) == "text") {
 					$file_text = file_get_contents($file_path);
 				}

@@ -489,7 +489,11 @@ function prettyPrint($dict) {
     <?php
     $examples = ["NaOH + HCl = NaCl + H2O","H2O","3Fe2O3 + CO = CO2 + 2Fe3O4","CH3OH", "H2O (g) = H2O (l)"];
 
-    $input = $_GET['input'];
+    if (isset($_GET['input'])) {
+        $input = $_GET['input'];
+    } else {
+        $input = null;
+    }
     $output = [];
     foreach ($examples as $example) {
         $encoded = urlencode($example);
@@ -508,8 +512,12 @@ function prettyPrint($dict) {
 
     <form id="form" method="get">
         <input type="text" name="input" autocomplete="off" spellcheck="false"
-               placeholder="chemical equation or molecule" maxlength="1000"
-               value="<?php echo str_replace("%2B", "+", $_GET['input']); ?>">
+               placeholder="chemical equation or molecule" maxlength="1000" required="required"
+               value="<?php
+               if (isset($_GET['input'])) {
+                   echo str_replace("%2B", "+", $_GET['input']);
+               }
+               ?>">
         <input type="submit">
     </form>
 
