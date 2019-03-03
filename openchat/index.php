@@ -98,7 +98,7 @@ class DBHandler {
 	}
 
 	function postMessage() {
-		$text = $this->conn->quote($_POST['text']);
+		$text = $_POST['text'];
 		$time = strftime("%Y-%m-%d %H:%M:%S",time());
 		if ($_FILES["userfile"]["error"] == UPLOAD_ERR_NO_FILE) {
 			$attached = 0;
@@ -106,8 +106,12 @@ class DBHandler {
 			$attached = 1;
 		}
 
-		$sql = "INSERT INTO Messages (message, post_date, has_attachment) VALUES ($text,'$time',$attached);";
-		$this->conn->exec($sql);
+		$sql = "INSERT INTO Messages (message, post_date, has_attachment) VALUES (:message,:post_date,:attached);";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':message', $text);
+        $stmt->bindParam(':post_date', $time);
+        $stmt->bindParam(':attached', $attached);
+        $stmt->execute();
 
 		if ($attached) {
 			if ($_FILES["userfile"]["error"] == UPLOAD_ERR_INI_SIZE) {
