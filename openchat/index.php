@@ -129,7 +129,15 @@ class DBHandler {
 
 }
 
-$pdo = new PDO("sqlite:../db/openchat.db");
+$db_folder = "../db";
+
+if (!file_exists($db_folder)) {
+    $oldmask = umask(0);
+    mkdir($db_folder, 0777);
+    umask($oldmask);
+}
+
+$pdo = new PDO("sqlite:$db_folder/openchat.db");
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 $handler = new DBHandler($pdo);
 $handler->init();
