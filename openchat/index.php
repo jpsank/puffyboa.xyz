@@ -27,6 +27,12 @@ class DBHandler {
 
 	function init() {
 
+        if (!file_exists("uploads")) {
+            $oldmask = umask(0);
+            mkdir("uploads", 0777);
+            umask($oldmask);
+        }
+
 		// Create table if not already created
 
 		$sql = "CREATE TABLE IF NOT EXISTS Messages (
