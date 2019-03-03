@@ -8,5 +8,6 @@ data.json
 uploads/*
 
 openchat/uploads/*
+*.db
 dbconf.php
 

@@ -17,31 +17,20 @@ function store_uploaded_image($file, $target_file, $max_img_dimens) {
 
 }
 
-require_once('../dbconf.php');
-
 class DBHandler {
 	public $conn;
-    public $dbname;
 	public $data;
 
-	function __construct($conn, $dbname) {
+	function __construct($conn) {
 		$this->conn = $conn;
-        $this->dbname = $dbname;
 	}
 
 	function init() {
 
-		// Create database if not already created
-
-        $sql = "CREATE DATABASE IF NOT EXISTS " . $this->dbname;
-        $this->conn->exec($sql);
-        $sql = "USE " . $this->dbname;
-        $this->conn->exec($sql);
-
 		// Create table if not already created
 
 		$sql = "CREATE TABLE IF NOT EXISTS Messages (
-		id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY, 
+		id INTEGER PRIMARY KEY, 
 		message VARCHAR(2000) NOT NULL,
 		post_date TIMESTAMP,
 		has_attachment bit NOT NULL DEFAULT (0)
@@ -140,8 +129,9 @@ class DBHandler {
 
 }
 
-$pdo = new PDO($driver, $user, $pass, $attr);
-$handler = new DBHandler($pdo, "openchat");
+$pdo = new PDO("sqlite:openchat.db");
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+$handler = new DBHandler($pdo);
 $handler->init();
 
 // } catch (PDOException $e) {
@@ -167,7 +157,7 @@ if (isset($_POST['text'])) {
 
 ?>
 
-<html>
+<html lang="en">
 
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
