@@ -21,21 +21,82 @@ function readJSON($file) {
 $ELEMENTS = readJSON("elements.json");
 $APPENDIX = readJSON("appendix.json");
 
+
 class Atom {
     public $elem;
-    public $num;
+    public $num = 1;
 
-    function __construct($sym, $num) {
+    function __construct($sym) {
         global $ELEMENTS;
         $this->elem = $ELEMENTS[$sym];
-        $this->num = $num;
+    }
+
+    function getName() {
+        return $this->elem["symbol"];
+    }
+    function getMass() {
+        return $this->elem['atomic_mass'];
+    }
+
+}
+
+class Constituent {
+    public $particles;
+    public $num;
+
+    function __construct($string) {
+        global $ELEMENTS;
+
+        $this->particles = [];
+        $pattern = join("|",array_keys($ELEMENTS));
+
+        if (startsWith($string, "(")) {  // it is polyatomic (i.e. (NO3)2 or (OH)2)
+            preg_match("/^(.+?)(\d*)$/", $string, $match);
+            $this->num = ($match[2] == "") ? 1 : (int)$match[2];
+            $poly = substr($match[1], 1, -1);
+
+            preg_match_all("/(?:$pattern)\d*/", $poly, $matches);
+            foreach ($matches[0] as $match) {
+                array_push($this->particles, new Constituent($match));
+            }
+        } else {  // it is a single element (i.e. C or N2)
+            preg_match("/^(.+?)(\d*)$/", $string, $match);
+            $this->num = ($match[2] == "") ? 1 : (int)$match[2];
+            $sym = $match[1];
+            $atom = new Atom($sym);
+            array_push($this->particles, $atom);
+        }
+    }
+
+    function getName($format=true) {  // $format specifies if subscript html should be used in name
+        $string = "";
+        foreach($this->particles as $particle) {
+            $string .= $particle->getName($format);
+        }
+        if (sizeof($this->particles) > 1) {
+            $string = "($string)";
+        }
+        if ($format) {
+            $string .= ($this->num == 1) ? "" : "<sub>$this->num</sub>";
+        } else {
+            $string .= ($this->num == 1) ? "" : $this->num;
+        }
+        return $string;
+    }
+    function getMass() {
+        $mass = 0;
+        foreach($this->particles as $particle) {
+            $mass += $particle->getMass() * $particle->num;
+        }
+        return $mass;
     }
 
 }
 
 class Molecule {
     public $charge;
-    public $appendix;
+    public $appendices;
+    public $phase;
     public $constituents;
     public $num;
 
@@ -43,9 +104,9 @@ class Molecule {
         global $ELEMENTS, $APPENDIX;
 
         // Get num of moles
-        preg_match("/(^\d*)(.+)/", $formula, $matches);
+        preg_match("/(^\d*)\s?(.+)/", $formula, $matches);
         if ($matches[1]) {
-            $formula = substr($formula,sizeof($matches[1]));
+            $formula = $matches[2];
             $this->num = (int)$matches[1];
         } else {
             $this->num = 1;
@@ -53,17 +114,16 @@ class Molecule {
 
         // Get phase specified
 
-        $phase = null;
+        $this->phase = null;
         $pattern = "/\s?(\((g|l|s|aq|a|c).*\))$/";
         preg_match($pattern, $formula, $matches, PREG_OFFSET_CAPTURE);
         if ($matches) {
-            $phase = $matches[1][0];
+            $this->phase = $matches[1][0];
             $formula = substr($formula,0,$matches[0][1]);
         }
 
         // If formula not in appendix, try to find closest match
-
-        if (!in_array($formula, array_keys($APPENDIX))) {
+        if ($APPENDIX[$formula] === null) {
             foreach (array_keys($APPENDIX) as $m) {
                 if (startsWith($m, $formula)) {
                     $formula = $m;
@@ -71,27 +131,30 @@ class Molecule {
                 }
             }
         }
+        $this->appendices = $APPENDIX[$formula];
 
         // Get appendix properties for phase, if specified
 
-        if ($phase) {
-            foreach ($APPENDIX[$formula] as $state) {
-                if ($state["phase"] == $phase) {
-                    $this->appendix = $state;
-                    break;
-                }
-            }
-            if ($this->appendix == null) {
-                foreach ($APPENDIX[$formula] as $state) {
-                    if (startsWith($state["phase"],substr($phase,0,-1))) {
-                        $this->appendix = $state;
+        if ($this->appendices) {
+            if ($this->phase) {
+                foreach ($this->appendices as $key=>$val) {
+                    if ($key == $this->phase) {
+                        $this->phase = $key;
                         break;
                     }
                 }
+                if (!$this->phase) {
+                    foreach ($this->appendices as $key=>$val) {
+                        if (startsWith($key, substr($this->phase, 0, -1))) {
+                            $this->phase = $key;
+                            break;
+                        }
+                    }
+                }
             }
-        }
-        if ($this->appendix == null) {
-            $this->appendix = $APPENDIX[$formula][0];
+            if (!$this->phase) {
+                $this->phase = key($this->appendices);
+            }
         }
 
         // Get charge of molecule, if specified
@@ -119,21 +182,28 @@ class Molecule {
 
         $this->constituents = [];
         $pattern = join("|",array_keys($ELEMENTS));
-        $pattern = "/($pattern)(\d*)/";
-        preg_match_all($pattern, $formula, $matches);
-        for ($i = 0; $i < sizeof($matches[0]); $i++) {
-            $sym = $matches[1][$i];
-            $num = ($matches[2][$i]=="")? 1: (int)$matches[2][$i];
-            $atom = new Atom($sym, $num);
-            array_push($this->constituents, $atom);
+        preg_match_all("/(?:$pattern)\d*|\((?:(?:$pattern)\d*)+\)\d*/", $formula, $matches);
+        foreach ($matches[0] as $match) {
+            array_push($this->constituents, new Constituent($match));
         }
 	}
 
+	function getFlatFormula() {
+        $string = "";
+        foreach ($this->constituents as $constituent) {
+            $string .= $constituent->getName(false);
+        }
+        if ($this->charge > 0) {
+            $string .= "+$this->charge";
+        } else if ($this->charge < 0) {
+            $string .= "$this->charge";
+        }
+        return $string;
+    }
     function getFormula() {
         $string = "";
-        foreach ($this->constituents as $atom) {
-            $num = ($atom->num==1)? "" : "<sub>$atom->num</sub>";
-            $string .= $atom->elem['symbol'] . $num;
+        foreach ($this->constituents as $constituent) {
+            $string .= $constituent->getName();
         }
         if ($this->charge > 0) {
             $string .= "<sup>+$this->charge</sup>";
@@ -142,46 +212,83 @@ class Molecule {
         }
         return $string;
     }
+    function getFormulaHTML($format=false) {
+        $formula = $this->getFormula();
+        $phase = $this->getCurrentPhase();
+        $num = ($this->num!=1)? $this->num : "";
+        $string = $num . $formula . " " . $phase;
+
+        if ($format) {
+            $encoded = urlencode($this->getFlatFormula() . " " . $phase);
+            $string = "<a class='formula' href='?input=$encoded'>$string</a>";
+        }
+
+        return $string;
+    }
+
+    function getPhases() {
+        if ($this->appendices) {
+            return array_keys($this->appendices);
+        }
+        return [];
+    }
+    function getPhasesHTML() {
+        $phases = $this->getPhases();
+        if ($phases) {
+            $html = "";
+            foreach ($phases as $phase) {
+                $encoded = urlencode($this->getFlatFormula() . " " . $phase);
+                if ($phase === $this->phase) {
+                    $html .= "<a class='phase selected' href='?input=$encoded'>$phase</a> ";
+                } else {
+                    $html .= "<a class='phase' href='?input=$encoded'>$phase</a> ";
+                }
+            }
+            return $html;
+        } else {
+            return "N/A";
+        }
+    }
 
     function getEnthalpy() {
-        if ($this->appendix) {
-            return $this->appendix["enthalpy"];
+        if ($this->appendices) {
+            return $this->appendices[$this->phase]["enthalpy"];
         }
         return false;
     }
     function getEntropy() {
-        if ($this->appendix) {
-            return $this->appendix["entropy"];
+        if ($this->appendices) {
+            return $this->appendices[$this->phase]["entropy"];
         }
         return false;
     }
     function getGibbs() {
-        if ($this->appendix) {
-            return $this->appendix["gibbs"];
+        if ($this->appendices) {
+            return $this->appendices[$this->phase]["gibbs"];
         }
         return false;
     }
-    function getPhase() {
-        if ($this->appendix) {
-            return $this->appendix["phase"];
+    function getCurrentPhase() {
+        if ($this->appendices) {
+            return $this->phase;
         }
         return "(N/A)";
     }
 
     function getMass() {
         $mm = 0;
-        foreach ($this->constituents as $atom) {
-            $mm += $atom->elem["atomic_mass"]*$atom->num;
+        foreach ($this->constituents as $constituent) {
+            $mm += $constituent->getMass()*$constituent->num;
         }
         return $mm;
     }
 
     function getComposition() {
         $props = [];
-        foreach ($this->constituents as $atom) {
-            $name = $atom->elem['name'];
-            $atomic_mass = $atom->elem['atomic_mass'];
-            array_push($props, "($name " . $atomic_mass . "g x $atom->num)");
+        foreach ($this->constituents as $constituent) {
+            $name = $constituent->getName();
+            $atomic_mass = $constituent->getMass();
+            array_push($props, "($name " . $atomic_mass . "g x $constituent->num)");
         }
         $string = join(" + ", $props);
         return $string;
@@ -217,25 +324,42 @@ class Equation {
         return [$reactants, $products];
     }
 
+    function countConstituents($molecules) {
+        $dict = [];
+        foreach ($molecules as $mol) {
+            foreach ($mol->constituents as $atom) {
+                $sym = $atom->elem["symbol"];
+                if (!$dict[$sym]) {
+                    $dict[$sym] = 0;
+                }
+                $dict[$sym] += $mol->num * $atom->num;
+            }
+        }
+        return $dict;
+    }
+    function isBalanced() {
+        $left = $this->countConstituents($this->reactants);
+        $right = $this->countConstituents($this->products);
+        return ($left==$right);
+    }
+
     function getBreakdown() {
         $left = [];
         foreach ($this->reactants as $mol) {
-            $num = $mol->num != 1? $mol->num : "";
-            array_push($left,$num . $mol->getFormula() . " " . $mol->getPhase());
+            array_push($left,$mol->getFormulaHTML(true));
         }
         $left = join(" + ", $left);
         $right = [];
         foreach ($this->products as $mol) {
-            $num = $mol->num != 1? $mol->num : "";
-            array_push($right,$num . $mol->getFormula() . " " . $mol->getPhase());
+            array_push($right,$mol->getFormulaHTML(true));
         }
         $right = join(" + ", $right);
-        return "$left --> $right";
+        return "$left &rarr; $right";
     }
 
     function checkHasSupport() {
         foreach (array_merge($this->reactants,$this->products) as $mol) {
-            if (!$mol->appendix) {
+            if (!$mol->appendices) {
                 return false;
             }
         }
@@ -281,7 +405,7 @@ class Equation {
 
     function getEnthalpyBehavior() {
         $enthalpy = $this->getEnthalpy();
-        if ($enthalpy == false) {
+        if ($enthalpy === false) {
             return "N/A";
         }
         if ($enthalpy > 0) {
@@ -340,7 +464,7 @@ function prettyPrint($dict) {
     $max = max($lengths);
     foreach ($dict as $key => $val) {
         $key = str_pad($key, $max);
-        echo "<div><pre class='key'>$key : </pre><pre class='val'>$val</pre></div>";
+        echo "<div><pre class='key'>$key </pre><pre class='val'>$val</pre></div>";
     }
 }
 
@@ -363,14 +487,19 @@ function prettyPrint($dict) {
     <p>Calculate the properties for all your chemical equations</p>
     <p>i.e.
     <?php
-        $examples = ["NaOH + HCl = NaCl + H2O","H2O","3Fe2O3 + CO = CO2 + 2Fe3O4","C2H6", "H2O (g) = H2O (l)"];
+    $examples = ["NaOH + HCl = NaCl + H2O","H2O","3Fe2O3 + CO = CO2 + 2Fe3O4","CH3OH", "H2O (g) = H2O (l)"];
 
-        $output = [];
-        foreach ($examples as $example) {
-            $encoded = urlencode($example);
+    $input = $_GET['input'];
+    $output = [];
+    foreach ($examples as $example) {
+        $encoded = urlencode($example);
+        if ($input == $example) {
+            array_push($output,"<a class='selected' href='?input=$encoded'>$example</a>");
+        } else {
             array_push($output,"<a href='?input=$encoded'>$example</a>");
         }
-        echo join(", ",$output);
+    }
+    echo join(", ",$output);
     ?>
     </p>
 </section>
@@ -396,6 +525,7 @@ function prettyPrint($dict) {
                     $equation = new Equation($input);
                     $dict = [];
                     $dict["Reaction"] = $equation->getBreakdown();
+                    $dict["Is balanced"] = $equation->isBalanced()? "Yes": "No";
                     if ($equation->checkHasSupport()) {
                         $dict["Enthalpy of rxn"] = $equation->getEnthalpy()
                             . " kJ/mol (" . $equation->getEnthalpyBehavior() . ")";
@@ -411,12 +541,13 @@ function prettyPrint($dict) {
                     $dict = [];
                     $dict["Composition"] = $molecule->getComposition();
                     $dict["Molar mass"] = $molecule->getMass() . " g/mol";
-                    if ($molecule->appendix) {
+                    if ($molecule->appendices) {
+                        $dict["Available phases"] = $molecule->getPhasesHTML();
                         $dict["Enthalpy of formation"] = $molecule->getEnthalpy() . " kJ/mol";
                         $dict["Entropy of formation"] = $molecule->getEntropy() . " J/molK";
                         $dict["Gibbs free energy of formation"] = $molecule->getGibbs() . " kJ/mol";
                     }
-                    echo "<div><pre>" . $molecule->getFormula() . "</pre></div>";
+                    echo "<div><pre>" . $molecule->getFormulaHTML() . "</pre></div>";
                     prettyPrint($dict);
                 }
             }

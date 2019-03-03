@@ -9,6 +9,7 @@ body {
 }
 #jumbo p a {
     border: 1px solid grey;
+    line-height: 40px;
     padding: 5px;
     text-decoration: none;
     color: grey;
@@ -16,6 +17,10 @@ body {
 #jumbo p a:hover {
     color: black;
 }
+#jumbo p a.selected {
+    color: black;
+}
+
 
 #form {
     display: flex;
@@ -52,9 +57,27 @@ body {
 #answer div {
     display: flex;
 }
+#answer div pre {
+    white-space: pre-wrap;
+    padding: 5px;
+    margin: 5px;
+}
+#answer div pre.val  {
+    background-color: #f4f4f4;
+}
 #answer div pre.key {
 }
 #answer div pre.val {
-    white-space: pre-wrap;
+}
+
+#answer div pre a {
+    text-decoration: none;
+    color: grey;
+}
+#answer div pre a.selected {
+    color: black;
+}
+#answer div pre a.formula:hover {
+    color: black;
 }
 
