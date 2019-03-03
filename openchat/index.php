@@ -129,7 +129,7 @@ class DBHandler {
 
 }
 
-$pdo = new PDO("sqlite:openchat.db");
+$pdo = new PDO("sqlite:../db/openchat.db");
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 $handler = new DBHandler($pdo);
 $handler->init();
