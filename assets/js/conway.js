@@ -63,7 +63,7 @@ function createMatrix(rows,cols) {
 }
 
 let cols = Math.round(screen.width/24); // default 60
-cols = cols > 80 ? 80 : cols < 20 ? 20 : cols;
+cols = cols > 80 ? 80 : cols < 30 ? 30 : cols;
 let rows = Math.round(screen.height/30);
 rows = rows > cols ? cols : rows;
 

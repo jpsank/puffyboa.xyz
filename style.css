@@ -39,33 +39,14 @@ nav {
 div#main {
 	margin: 1vw;
 }
+@media (max-width: 400px) {
+	div#main {
+		margin: 0;
+	}
+}
 
 canvas#canvas-of-life {
 }
-
-/*
-table#table-of-life {
-	background-color: white;
-	width: 100%;
-	height: 50vw;
-	border-spacing: 0;
-	border-collapse: collapse;
-	display: block;
-}
-table#table-of-life tbody {
-	height: 100%;
-	width: inherit;
-	display: table;
-}
-table#table-of-life tr {
-}
-table#table-of-life tr td {
-	border: 1px dashed lightgrey;
-}
-table#table-of-life tr td.on {
-	background-color: black;
-}
-*/
 
 section {
 	min-height: 450px;
@@ -114,7 +95,15 @@ section#donate {
 	}
 }
 
-
+#fidget-container {
+	width: 100%;
+	text-align: center;
+}
 canvas#fidget {
 	float: right;
+}
+@media (max-width: 800px) {
+	canvas#fidget {
+		float: none;
+	}
 }

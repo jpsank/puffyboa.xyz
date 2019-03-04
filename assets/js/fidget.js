@@ -142,8 +142,14 @@ function getTouchPos(canvasDom, touchEvent) {
 }
 
 function resize() {
-    canvas.width = 120+window.innerWidth/5;
-	canvas.height = 120+window.innerWidth/5;
+    // canvas.width = 120 + window.innerWidth / 5;
+    // canvas.height = 120 + window.innerWidth / 5;
+    canvas.width = 400;
+    canvas.height = 400;
+    if (window.innerWidth < 400) {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerWidth;
+    }
 	fidget.x = canvas.width/2;
 	fidget.y = canvas.height/2;
 	fidget.size = canvas.width/2-50;
