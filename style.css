@@ -60,6 +60,12 @@ section h1 {
 section#projects {
 	padding: 5vw;
 }
+@media (max-width: 800px) {
+	section#projects h1 {
+		margin-top: 0;
+		text-align: center;
+	}
+}
 section#projects ul {
 	list-style: none;
 }
@@ -84,23 +90,13 @@ footer a img {
 	height: inherit;
 }
 
-section#donate {
-	float: right;
-}
-
-@media (max-width: 800px) {
-	section#donate {
-		float: none;
-		margin: 0 10vw;
-	}
-}
-
 #fidget-container {
 	width: 100%;
 	text-align: center;
 }
 canvas#fidget {
 	float: right;
+	cursor: default;
 }
 @media (max-width: 800px) {
 	canvas#fidget {

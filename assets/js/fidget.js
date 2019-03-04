@@ -51,7 +51,8 @@ function loop() {
     // ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = "white";
     ctx.beginPath();
-    ctx.rect(0,0,canvas.width,canvas.height);
+    ctx.ellipse(canvas.width/2,canvas.height/2,canvas.width/2,canvas.height/2,
+        0,0,2*Math.PI);
     ctx.fill();
 
     fidget.draw();
@@ -141,15 +142,16 @@ function getTouchPos(canvasDom, touchEvent) {
 function resize() {
     // canvas.width = 120 + window.innerWidth / 5;
     // canvas.height = 120 + window.innerWidth / 5;
-    canvas.width = 400;
-    canvas.height = 400;
-    if (window.innerWidth < 400) {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerWidth;
+    let size = 400;
+    if (window.innerWidth < 600) {
+        size = window.innerWidth-200;
     }
+    size = size < 100 ? 100 : size;
+    canvas.width = size;
+    canvas.height = size;
 	fidget.x = canvas.width/2;
 	fidget.y = canvas.height/2;
-	fidget.size = canvas.width/2-50;
+	fidget.size = canvas.width/2-canvas.width/10;
 }
 
 function setup() {
