@@ -12,7 +12,7 @@ function store_uploaded_image($file, $target_file, $max_img_dimens) {
 	if ($image->getHeight() > $max_img_dimens) {
 		$image->resizeToHeight($max_img_dimens);
 	}
-	$image->save($target_file);
+	$image->save($target_file,$image->image_type);
 	return $target_file;
 
 }

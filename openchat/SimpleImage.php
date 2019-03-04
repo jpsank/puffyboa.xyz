@@ -97,10 +97,12 @@ class SimpleImage {
 
    function resize($width,$height) {
       $new_image = imagecreatetruecolor($width, $height);
-      // if ($image_type == IMAGETYPE_PNG) {
-      //    $black = imagecolorallocate($im, 0, 0, 0);
-      //    imagecolortransparent($new_image, $black);
-      // }
+       if ($this->image_type == IMAGETYPE_PNG) {
+          imagealphablending($new_image, false);
+          imagesavealpha($new_image,true);
+          $transparent = imagecolorallocatealpha($new_image, 255, 255, 255, 127);
+          imagefilledrectangle($new_image, 0, 0, $width, $height, $transparent);
+       }
       imagecopyresampled($new_image, $this->image, 0, 0, 0, 0, $width, $height, $this->getWidth(), $this->getHeight());
       $this->image = $new_image;
    }      
