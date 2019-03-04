@@ -94,37 +94,51 @@ function mouseMove(e) {
     }
 }
 
+let touchPos = null;
+
 function touchStart(e) {
+    if (e.target === canvas) {
+        e.preventDefault();
+    }
+    touchPos = getTouchPos(canvas, e);
     drag = true;
 }
 function touchEnd(e) {
+    if (e.target === canvas) {
+        e.preventDefault();
+    }
     drag = false;
 }
 function touchMove(e) {
-    if (e.touches) {
-        if (e.touches.length === 1) {
-            const touch = e.touches[0];
-            let touchX = touch.offsetX;
-            let touchY = touch.offsetY;
-            if (drag) {
-                if ((fidget.x-fidget.size < touchX < fidget.x+fidget.size && fidget.y-fidget.size < touchY < fidget.y+fidget.size)) {
-                    let x;
-                    let y;
-                    if (touchY > fidget.y) {
-                        x = e.movementX;
-                    } else {
-                        x = -e.movementX;
-                    }
-                    if (touchX > fidget.x) {
-                        y = -e.movementY;
-                    } else {
-                        y = e.movementY;
-                    }
-                    fidget.accel = (x+y)/100;
-                }
+    if (e.target === canvas) {
+        e.preventDefault();
+    }
+    const newPos = getTouchPos(canvas, e);
+    if (drag) {
+        if ((fidget.x-fidget.size < newPos.x < fidget.x+fidget.size && fidget.y-fidget.size < newPos.y < fidget.y+fidget.size)) {
+            let x;
+            let y;
+            if (newPos.y > fidget.y) {
+                x = (newPos.x-touchPos.x);
+            } else {
+                x = -(newPos.x-touchPos.x);
             }
+            if (newPos.x > fidget.x) {
+                y = -(newPos.y-touchPos.y);
+            } else {
+                y = (newPos.y-touchPos.y);
+            }
+            fidget.accel = (x+y)/100;
         }
     }
+    touchPos = newPos;
+}
+function getTouchPos(canvasDom, touchEvent) {
+    const rect = canvasDom.getBoundingClientRect();
+    return {
+        x: touchEvent.touches[0].clientX - rect.left,
+        y: touchEvent.touches[0].clientY - rect.top
+    };
 }
 
 function resize() {
