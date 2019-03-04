@@ -105,6 +105,20 @@ class Equation {
         return $answer;
     }
 
+    function getActivationTemp() {
+        $enthalpy = $this->getEnthalpy();
+        $entropy = $this->getEntropy();
+        return $enthalpy/($entropy/1000);  // convert entropy to kJ to match enthalpy
+    }
+    function isFavorableAt($kelvin) {
+        $enthalpy = $this->getEnthalpy();
+        $entropy = $this->getEntropy();
+        if ($enthalpy-$kelvin*($entropy/1000) < 0) {
+            return true;
+        }
+        return false;
+    }
+
     function getEnthalpyBehavior() {
         $enthalpy = $this->getEnthalpy();
         if ($enthalpy === false) {
@@ -147,14 +161,17 @@ class Equation {
     function getBehavior() {
         $enthalpy = $this->getEnthalpy();
         $entropy = $this->getEntropy();
-        if ($enthalpy > 0 && $entropy > 0) {
-            return "spontaneous at high temperatures";
-        } else if ($enthalpy < 0 && $entropy < 0) {
-            return "spontaneous at low temperatures";
-        } else if ($enthalpy > 0 && $entropy < 0) {
-            return "never spontaneous";
-        } else if ($enthalpy < 0 && $entropy > 0) {
-            return "always spontaneous";
+        if ($enthalpy && $entropy) {
+            $activationTemp = round($this->getActivationTemp(), 3);
+            if ($enthalpy > 0 && $entropy > 0) {
+                return "spontaneous at high temperatures (above " . $activationTemp . "K)";
+            } else if ($enthalpy < 0 && $entropy < 0) {
+                return "spontaneous at low temperatures (below " . $activationTemp . "K)";
+            } else if ($enthalpy > 0 && $entropy < 0) {
+                return "never spontaneous";
+            } else if ($enthalpy < 0 && $entropy > 0) {
+                return "always spontaneous";
+            }
         }
         return "N/A";
     }

@@ -109,6 +109,7 @@ function prettyPrint($dict) {
                         $dict["Gibbs free energy of rxn"] = $equation->getGibbs()
                             . " kJ/mol (" . $equation->getGibbsBehavior() . ")";
                         $dict["Behavior"] = $equation->getBehavior();
+                        $dict["Favorable at 25 Celsius"] = $equation->isFavorableAt(298.15)? "Yes": "No";
                     }
                     prettyPrint($dict);
                 } else {
