@@ -43,9 +43,6 @@ Fidget.prototype.draw = function() {
 Fidget.prototype.spin = function () {
     this.rot += this.accel;
     this.accel *= .99;
-    if (this.accel < 0) {
-        this.accel = 0;
-    }
 };
 
 const fidget = new Fidget(canvas.width/2,canvas.height/2,canvas.width/2-50);
