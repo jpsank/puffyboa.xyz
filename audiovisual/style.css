@@ -1,0 +1,20 @@
+body {
+    padding: 0;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+input#file {
+    position: absolute;
+}
+button#fullscreen {
+    position: absolute;
+    right: 0;
+    border: none;
+    background-color: transparent;
+    color: white;
+    cursor: pointer;
+}
+button#fullscreen:focus {
+    outline: none;
+}
