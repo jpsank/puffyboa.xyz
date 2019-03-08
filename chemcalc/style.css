@@ -80,4 +80,13 @@ body {
 #answer div pre a.formula:hover {
     color: black;
 }
+#answer div .blue {
+    color: blue;
+}
+#answer div .green {
+    color: green;
+}
+#answer div .red {
+    color: red;
+}
 

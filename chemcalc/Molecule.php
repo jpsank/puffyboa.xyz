@@ -95,40 +95,36 @@ class Molecule {
         }
     }
 
-    function getFlatFormula() {
+    function getFormula($format=true) {
         $string = "";
         foreach ($this->constituents as $constituent) {
-            $string .= $constituent->getName(false);
+            $string .= $constituent->getName($format);
         }
-        if ($this->charge > 0) {
-            $string .= "+$this->charge";
-        } else if ($this->charge < 0) {
-            $string .= "$this->charge";
+        if ($format) {
+            if ($this->charge > 0) {
+                $string .= "<sup>+$this->charge</sup>";
+            } else if ($this->charge < 0) {
+                $string .= "<sup>$this->charge</sup>";
+            }
+        } else {
+            if ($this->charge > 0) {
+                $string .= "+$this->charge";
+            } else if ($this->charge < 0) {
+                $string .= "$this->charge";
+            }
         }
         return $string;
     }
-    function getFormula() {
-        $string = "";
-        foreach ($this->constituents as $constituent) {
-            $string .= $constituent->getName();
-        }
-        if ($this->charge > 0) {
-            $string .= "<sup>+$this->charge</sup>";
-        } else if ($this->charge < 0) {
-            $string .= "<sup>$this->charge</sup>";
-        }
-        return $string;
-    }
-    function getFormulaHTML($format=false) {
+    function getFullFormula($html=false, $format=true) {
         $num = ($this->num!=1)? $this->num : "";
-        $formula = $this->getFormula();
+        $formula = $this->getFormula($format);
         $phase = $this->getCurrentPhase();
         $phase = ($phase)? " $phase": "";
 
         $string = $num . $formula . $phase;
 
-        if ($format) {
-            $encoded = urlencode($this->getFlatFormula() . $phase);
+        if ($html) {
+            $encoded = urlencode($this->getFormula(false) . $phase);
             if ($phase != "") {
                 $string = "<a class='formula' href='?input=$encoded'>$string</a>";
             } else {
@@ -150,7 +146,7 @@ class Molecule {
         if ($phases) {
             $html = "";
             foreach ($phases as $phase) {
-                $encoded = urlencode($this->getFlatFormula() . " " . $phase);
+                $encoded = urlencode($this->getFormula(false) . " " . $phase);
                 if ($phase === $this->phase) {
                     $html .= "<a class='phase selected' href='?input=$encoded'>$phase</a> ";
                 } else {
@@ -207,14 +203,17 @@ class Molecule {
         return $string;
     }
 
-    function countConstituents() {
+    function countConstituents($molNum=null) {
+        if ($molNum == null) {
+            $molNum = $this->num;
+        }
         $dict = [];
         foreach($this->constituents as $constituent) {
             foreach ($constituent->countParticles() as $sym=>$num) {
                 if (!$dict[$sym]) {
                     $dict[$sym] = 0;
                 }
-                $dict[$sym] += $num * $this->num;
+                $dict[$sym] += $num * $molNum;
             }
         }
         return $dict;

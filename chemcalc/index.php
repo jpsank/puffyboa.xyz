@@ -30,8 +30,11 @@ function prettyPrint($dict) {
     $lengths = array_map('strlen', array_keys($dict));
     $max = max($lengths);
     foreach ($dict as $key => $val) {
+        $valClass = 'val';
+        if ($val == 'No') { $valClass .= " red"; }
+        else if ($val == 'Yes') { $valClass .= " green"; }
         $key = str_pad($key, $max);
-        echo "<div><pre class='key'>$key </pre><pre class='val'>$val</pre></div>";
+        echo "<div><pre class='key'>$key </pre><pre class='$valClass'>$val</pre></div>";
     }
 }
 
@@ -98,9 +101,21 @@ function prettyPrint($dict) {
                 $input = str_replace("%2B", "+", $input);
                 if ((strpos($input, '=') !== false)) {
                     $equation = new Equation($input);
+
+                    $isBalanced = $equation->isBalanced();
+
                     $dict = [];
-                    $dict["Reaction"] = $equation->getBreakdown();
-                    $dict["Is balanced"] = $equation->isBalanced()? "Yes": "No";
+
+                    if (!$isBalanced) {
+                        $newEq = $equation->getBalancedEq();
+                        if ($newEq) {
+                            $flat = urlencode($newEq->getEquationStr(false,false));
+                            echo "<div><pre><a class='blue' href='?input=$flat'>Go to balanced version</a></pre></div>";
+                        }
+                    }
+
+                    $dict["Reaction"] = $equation->getEquationStr(true,true);
+                    $dict["Is balanced"] = $isBalanced? "Yes": "No";
                     if ($equation->checkHasSupport()) {
                         $dict["Enthalpy of rxn"] = $equation->getEnthalpy()
                             . " kJ/mol (" . $equation->getEnthalpyBehavior() . ")";
@@ -123,7 +138,7 @@ function prettyPrint($dict) {
                         $dict["Entropy of formation"] = $molecule->getEntropy() . " J/molK";
                         $dict["Gibbs free energy of formation"] = $molecule->getGibbs() . " kJ/mol";
                     }
-                    echo "<div><pre>" . $molecule->getFormulaHTML() . "</pre></div>";
+                    echo "<div><pre>" . $molecule->getFullFormula() . "</pre></div>";
                     prettyPrint($dict);
                 }
             }

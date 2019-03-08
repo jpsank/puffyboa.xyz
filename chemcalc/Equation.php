@@ -45,18 +45,59 @@ class Equation {
         return ($left==$right);
     }
 
-    function getBreakdown() {
-        $left = [];
-        foreach ($this->reactants as $mol) {
-            array_push($left,$mol->getFormulaHTML(true));
+    function countNewConstituents($molecules, $nums) {
+        $dict = [];
+        foreach ($molecules as $i=>$mol) {
+            foreach ($mol->countConstituents($nums[$i]) as $sym=>$num) {
+                if (!$dict[$sym]) {
+                    $dict[$sym] = 0;
+                }
+                $dict[$sym] += $num;
+            }
         }
-        $left = join(" + ", $left);
-        $right = [];
-        foreach ($this->products as $mol) {
-            array_push($right,$mol->getFormulaHTML(true));
+        return $dict;
+    }
+    function getBalancedEq() {
+        $numReactants = sizeof($this->reactants);
+        $numProducts = sizeof($this->products);
+        $bruteForceMax = 10;
+        // adjust max brute force ratio so we don't use too much processing power
+        while ($bruteForceMax > 1 && pow($bruteForceMax, $numReactants+$numProducts) > 50000) {
+            $bruteForceMax--;
         }
-        $right = join(" + ", $right);
-        return "$left &rarr; $right";
+        foreach(sampling(range(1,$bruteForceMax), $numReactants+$numProducts) as $ratioArray) {
+            $leftRatio = array_slice($ratioArray,0,$numReactants);
+            $rightRatio = array_slice($ratioArray,$numReactants);
+            $leftDict = $this->countNewConstituents($this->reactants,$leftRatio);
+            $rightDict = $this->countNewConstituents($this->products,$rightRatio);
+            if ($leftDict==$rightDict) {
+                $newEq = clone $this;
+                $newEq->reactants = array_map(function ($mol) { return clone $mol; }, $this->reactants);
+                $newEq->products = array_map(function ($mol) { return clone $mol; }, $this->products);
+                foreach ($ratioArray as $i=>$n) {
+                    if ($i < $numReactants) {
+                        $newEq->reactants[$i]->num = $n;
+                    } else {
+                        $newEq->products[$i-$numReactants]->num = $n;
+                    }
+                }
+                return $newEq;
+            }
+        }
+        return false;
+    }
+
+    function getEquationStr($html=false, $format=false) {
+        $callback = function($mol) use ($html, $format) {
+            return $mol->getFullFormula($html, $format);
+        };
+        $left = join(" + ", array_map($callback, $this->reactants));
+        $right = join(" + ", array_map($callback, $this->products));
+        if ($format) {
+            return "$left &rarr; $right";
+        } else {
+            return "$left = $right";
+        }
     }
 
     function checkHasSupport() {
@@ -175,5 +216,26 @@ class Equation {
         }
         return "N/A";
     }
+
+}
+
+function sampling($items, $size, $combinations = array()) {
+    if (empty($combinations)) {
+        $combinations = $items;
+    }
+    if ($size == 1) {
+        return $combinations;
+    }
+    $new_combinations = array();
+    foreach ($combinations as $combination) {
+        foreach ($items as $item) {
+            if (is_array($combination)) {
+                $new_combinations[] = array_merge($combination,[$item]);
+            } else {
+                $new_combinations[] = [$combination,$item];
+            }
+        }
+    }
+    return sampling($items, $size - 1, $new_combinations);
 
 }
