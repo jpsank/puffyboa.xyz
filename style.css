@@ -70,11 +70,23 @@ section#projects ul {
 	list-style: none;
 }
 section#projects ul li {
+	margin: 1vw;
 	padding: 1vw;
+	background-color: #fafafa;
 }
-section#projects ul li a {
+section#projects ul li > a {
 	font-size: 1.2em;
-	padding-bottom: 10px;
+}
+section#projects ul li > a:hover {
+}
+section#projects ul li p {
+	margin: 0;
+	padding-top: 3px;
+}
+section#projects ul li p a {
+}
+section#projects ul li p a:hover {
+
 }
 
 footer {
