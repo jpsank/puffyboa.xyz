@@ -11,3 +11,5 @@ openchat/uploads/*
 *.db
 dbconf.php
 
+todo.txt
+
