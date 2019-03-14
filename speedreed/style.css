@@ -13,7 +13,6 @@ body {
 
 div.jumbo {
     padding: 20px;
-    background-color: white;
 }
 div.jumbo h1 {
     margin-top: 5px;
@@ -51,6 +50,12 @@ br {
 #text {
     margin: 40px 8vw 40px 12vw;
 }
+#text:after {
+    content: "";
+    display: block;
+    height: 25vh;
+    width: 100%;
+}
 @media (max-width: 600px) {
     #text {
         margin: 4vw;
@@ -63,14 +68,15 @@ div.line {
 }
 p.word {
     display: none;
-    font-size: 2em;
+    font-size: 1.8em;
     text-align: center;
     font-family: serif;
-    margin: 2vw;
+    margin: 1.5vw;
 }
 
 @media(max-width: 800px) {
     p.word {
         font-size: 1.5em;
+        margin: 2vw;
     }
 }
