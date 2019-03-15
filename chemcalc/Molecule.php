@@ -1,98 +1,18 @@
 <?php
 
 class Molecule {
-    public $charge;
-    public $appendices;
-    public $phase;
-    public $constituents;
     public $num;
+    public $constituents;
+    public $charge;
+    public $phase;
+    public $appendices;
 
-    function __construct($formula) {
-        global $ELEMENTS, $APPENDIX;
-
-        // Get num of moles
-        preg_match("/(^\d*)\s?(.+)/", $formula, $matches);
-        if ($matches[1]) {
-            $formula = $matches[2];
-            $this->num = (int)$matches[1];
-        } else {
-            $this->num = 1;
-        }
-
-        // Get phase specified
-
-        $phase = null;
-        $pattern = "/\s?(\((g|l|s|aq|a|c).*\))$/";
-        preg_match($pattern, $formula, $matches, PREG_OFFSET_CAPTURE);
-        if ($matches) {
-            $phase = $matches[1][0];
-            $formula = substr($formula,0,$matches[0][1]);
-        }
-
-        // If formula not in appendix, try to find closest match
-        if ($APPENDIX[$formula] === null) {
-            foreach (array_keys($APPENDIX) as $m) {
-                if (startsWith($m, $formula)) {
-                    $formula = $m;
-                    break;
-                }
-            }
-        }
-        $this->appendices = $APPENDIX[$formula];
-
-        // Get appendix properties for phase, if specified
-
-        if ($this->appendices) {
-            if ($phase != null) {
-                foreach ($this->appendices as $key=>$val) {
-                    if ($key == $phase) {
-                        $this->phase = $key;
-                        break;
-                    }
-                }
-                if (!$this->phase) {
-                    foreach ($this->appendices as $key=>$val) {
-                        if (startsWith($key, substr($phase, 0, -1))) {
-                            $this->phase = $key;
-                            break;
-                        }
-                    }
-                }
-            }
-            if ($this->phase == null) {
-                $this->phase = key($this->appendices);
-            }
-        }
-
-        // Get charge of molecule, if specified
-
-        $this->charge = 0;
-        if (endsWith($formula, "-")) {
-            $this->charge = -1;
-        } else if (endsWith($formula, "+")) {
-            $this->charge = 1;
-        } else {
-            $pos = strpos($formula, "-");
-            if ($pos) {
-                $this->charge = (int)substr($formula, $pos);
-                $formula = substr($formula, 0, $pos);
-            } else {
-                $pos = strpos($formula, "+");
-                if ($pos) {
-                    $this->charge = (int)substr($formula, $pos);
-                    $formula = substr($formula, 0, $pos);
-                }
-            }
-        }
-
-        // Divide molecule into constituent atoms
-
-        $this->constituents = [];
-        $pattern = join("|",array_keys($ELEMENTS));
-        preg_match_all("/(?:$pattern)\d*|\((?:(?:$pattern)\d*)+\)\d*/", $formula, $matches);
-        foreach ($matches[0] as $match) {
-            array_push($this->constituents, new Polyatomic($match));
-        }
+    function __construct($num, $constituents, $charge, $phase, $appendices) {
+        $this->num = $num;
+        $this->constituents = $constituents;
+        $this->charge = $charge;
+        $this->phase = $phase;
+        $this->appendices = $appendices;
     }
 
     function getFormula($format=true) {

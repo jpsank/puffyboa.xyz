@@ -49,44 +49,46 @@ body {
 }
 
 #answer {
-    padding: 20px;
-    font-size: 1em;
     border: 1px solid black;
     border-top: none;
+    padding: 2vw;
+    font-family: monospace;
+    font-size: 1em;
 }
-#answer div {
-    display: flex;
+#answer table {
+    font-size: 1em;
+    width: 100%;
+    border-spacing: 10px;
 }
-#answer div pre {
-    white-space: pre-wrap;
+#answer tr {
+}
+#answer tr td {
     padding: 5px;
-    margin: 5px;
 }
-#answer div pre.val  {
+#answer tr td.key  {
+    width: 20%;
+}
+#answer tr td.val  {
     background-color: #f4f4f4;
 }
-#answer div pre.key {
-}
-#answer div pre.val {
-}
 
-#answer div pre a {
+#answer tr td a {
     text-decoration: none;
     color: grey;
 }
-#answer div pre a.selected {
+#answer tr td a.selected {
     color: black;
 }
-#answer div pre a.formula:hover {
+#answer tr td a.formula:hover {
     color: black;
 }
-#answer div .blue {
+#answer .blue {
     color: blue;
 }
-#answer div .green {
+#answer .green {
     color: green;
 }
-#answer div .red {
+#answer .red {
     color: red;
 }
 

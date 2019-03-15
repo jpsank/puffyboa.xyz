@@ -4,27 +4,9 @@ class Equation {
     public $reactants;
     public $products;
 
-    function __construct($equation) {
-        $parsed = $this->parseEqStr($equation);
-        $this->reactants = $parsed[0];
-        $this->products = $parsed[1];
-    }
-
-    function parseSide($side) {
-        $list = [];
-        foreach ($side as $item) {
-            $item = trim($item);
-            array_push($list, new Molecule($item));
-        }
-        return $list;
-    }
-    function parseEqStr($string) {
-        $sides = explode("=", $string);
-        $left = explode("+",$sides[0]);
-        $right = explode("+",$sides[1]);
-        $reactants = $this->parseSide($left);
-        $products = $this->parseSide($right);
-        return [$reactants, $products];
+    function __construct($reactants, $products) {
+        $this->reactants = $reactants;
+        $this->products = $products;
     }
 
     function countConstituents($molecules) {

@@ -1,10 +1,6 @@
 <?php
 
-class Constituent {
-
-}
-
-class Atom extends Constituent {
+class Atom {
     public $elem;
     public $num = 1;
 
@@ -25,32 +21,13 @@ class Atom extends Constituent {
 
 }
 
-class Polyatomic extends Constituent {
+class Constituent {
     public $particles;
     public $num;
 
-    function __construct($string) {
-        global $ELEMENTS;
-
-        $this->particles = [];
-        $pattern = join("|",array_keys($ELEMENTS));
-
-        if (startsWith($string, "(")) {  // it is polyatomic (i.e. (NO3)2 or (OH)2)
-            preg_match("/^(.+?)(\d*)$/", $string, $match);
-            $this->num = ($match[2] == "") ? 1 : (int)$match[2];
-            $poly = substr($match[1], 1, -1);
-
-            preg_match_all("/(?:$pattern)\d*/", $poly, $matches);
-            foreach ($matches[0] as $match) {
-                array_push($this->particles, new Polyatomic($match));
-            }
-        } else {  // it is a single element (i.e. C or N2)
-            preg_match("/^(.+?)(\d*)$/", $string, $match);
-            $this->num = ($match[2] == "") ? 1 : (int)$match[2];
-            $sym = $match[1];
-            $atom = new Atom($sym);
-            array_push($this->particles, $atom);
-        }
+    function __construct($num, $particles) {
+        $this->num = $num;
+        $this->particles = $particles;
     }
 
     function getName($format=true) {  // $format specifies if subscript html should be used in name

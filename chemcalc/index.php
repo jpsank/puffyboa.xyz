@@ -21,20 +21,22 @@ function readJSON($file) {
 $ELEMENTS = readJSON("elements.json");
 $APPENDIX = readJSON("appendix.json");
 
+require("Parser.php");
 require("Constituent.php");
 require("Molecule.php");
 require("Equation.php");
 
 
+function html_entity_strlen($html) {
+    return strlen(utf8_decode(html_entity_decode($html, ENT_COMPAT, 'utf-8')));
+}
+
 function prettyPrint($dict) {
-    $lengths = array_map('strlen', array_keys($dict));
-    $max = max($lengths);
     foreach ($dict as $key => $val) {
-        $valClass = 'val';
-        if ($val == 'No') { $valClass .= " red"; }
-        else if ($val == 'Yes') { $valClass .= " green"; }
-        $key = str_pad($key, $max);
-        echo "<div><pre class='key'>$key </pre><pre class='$valClass'>$val</pre></div>";
+        $color = '';
+        if ($val == 'No') { $color = " red"; }
+        else if ($val == 'Yes') { $color = " green"; }
+        echo "<tr><td class='key'>$key </td><td class='val$color'>$val</td></tr>";
     }
 }
 
@@ -54,7 +56,7 @@ function prettyPrint($dict) {
 
 <section id="jumbo">
     <h1>ChemCalc</h1>
-    <p>Calculate the properties for all your chemical equations</p>
+    <p>Calculate the properties for all your chemical equations and molecules</p>
     <p>i.e.
     <?php
     $examples = ["NaOH + HCl = NaCl + H2O","H2O","3Fe2O3 + CO = CO2 + 2Fe3O4","CH3OH", "H2O (g) = H2O (l)"];
@@ -92,6 +94,7 @@ function prettyPrint($dict) {
     </form>
 
     <div id="answer">
+        <table>
         <?php
 
         // Did the user submit input
@@ -99,8 +102,9 @@ function prettyPrint($dict) {
             if ($_GET['input'] != '') {
                 $input = $_GET['input'];
                 $input = str_replace("%2B", "+", $input);
+                $parser = new Parser();
                 if ((strpos($input, '=') !== false)) {
-                    $equation = new Equation($input);
+                    $equation = $parser->parseEquation($input);
 
                     $isBalanced = $equation->isBalanced();
 
@@ -110,41 +114,42 @@ function prettyPrint($dict) {
                         $newEq = $equation->getBalancedEq();
                         if ($newEq) {
                             $flat = urlencode($newEq->getEquationStr(false,false));
-                            echo "<div><pre><a class='blue' href='?input=$flat'>Go to balanced version</a></pre></div>";
+                            echo "<tr><td><a class='blue' href='?input=$flat'>Go to balanced version</a></td></tr>";
                         }
                     }
 
                     $dict["Reaction"] = $equation->getEquationStr(true,true);
                     $dict["Is balanced"] = $isBalanced? "Yes": "No";
                     if ($equation->checkHasSupport()) {
-                        $dict["Enthalpy of rxn"] = $equation->getEnthalpy()
+                        $dict["&Delta;H&deg;<sub>rxn</sub>"] = $equation->getEnthalpy()
                             . " kJ/mol (" . $equation->getEnthalpyBehavior() . ")";
-                        $dict["Entropy of rxn"] = $equation->getEntropy()
+                        $dict["&Delta;S&deg;<sub>rxn</sub>"] = $equation->getEntropy()
                             . " J/molK (" . $equation->getEntropyBehavior() . ")";
-                        $dict["Gibbs free energy of rxn"] = $equation->getGibbs()
+                        $dict["&Delta;G&deg;<sub>rxn</sub>"] = $equation->getGibbs()
                             . " kJ/mol (" . $equation->getGibbsBehavior() . ")";
                         $dict["Behavior"] = $equation->getBehavior();
                         $dict["Favorable at 25 Celsius"] = $equation->isFavorableAt(298.15)? "Yes": "No";
                     }
                     prettyPrint($dict);
                 } else {
-                    $molecule = new Molecule($input);
+                    $molecule = $parser->parseMolecule($input);
                     $dict = [];
                     $dict["Composition"] = $molecule->getComposition();
-                    $dict["Molar mass"] = $molecule->getMass() . " g/mol";
+                    $dict["Average molar mass"] = $molecule->getMass() . " g/mol";
                     if ($molecule->appendices) {
                         $dict["Available phases"] = $molecule->getPhasesHTML();
-                        $dict["Enthalpy of formation"] = $molecule->getEnthalpy() . " kJ/mol";
-                        $dict["Entropy of formation"] = $molecule->getEntropy() . " J/molK";
-                        $dict["Gibbs free energy of formation"] = $molecule->getGibbs() . " kJ/mol";
+                        $dict["&Delta;H&deg;<sub>f</sub>"] = $molecule->getEnthalpy() . " kJ/mol";
+                        $dict["&Delta;S&deg;<sub>f</sub>"] = $molecule->getEntropy() . " J/molK";
+                        $dict["&Delta;G&deg;<sub>f</sub>"] = $molecule->getGibbs() . " kJ/mol";
                     }
-                    echo "<div><pre>" . $molecule->getFullFormula() . "</pre></div>";
+                    echo "<tr><td>" . $molecule->getFullFormula() . "</td></tr>";
                     prettyPrint($dict);
                 }
             }
         }
 
         ?>
+        </table>
     </div>
 
 </section>
