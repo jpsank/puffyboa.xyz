@@ -136,7 +136,11 @@ function resize() {
 }
 
 function drawCanvasBasedOn(arr) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.beginPath();
+    ctx.rect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "black";
+    ctx.fill();
 
     const tileSizeX = canvas.width/arr[0].length;
     const tileSizeY = canvas.height/arr.length;
@@ -145,7 +149,6 @@ function drawCanvasBasedOn(arr) {
             let fill;
             switch (arr[r][c]) {
                 case 0:
-                    fill = "black";
                     break;
                 case 1:
                     fill = "blue";
@@ -157,10 +160,12 @@ function drawCanvasBasedOn(arr) {
                     fill = "yellow";
                     break;
             }
-            ctx.fillStyle = fill;
-            ctx.beginPath();
-            ctx.rect(c*tileSizeX,r*tileSizeY,tileSizeX,tileSizeY);
-            ctx.fill();
+            if (fill) {
+                ctx.fillStyle = fill;
+                ctx.beginPath();
+                ctx.rect(c * tileSizeX, r * tileSizeY, tileSizeX, tileSizeY);
+                ctx.fill();
+            }
         }
     }
 }
