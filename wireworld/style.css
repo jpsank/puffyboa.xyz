@@ -1,0 +1,39 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: black;
+    color: white;
+}
+
+#presetSelect {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 20px;
+    background-color: #222;
+}
+#presetSelect p {
+    display: inline;
+    padding: 5px;
+    margin: 10px;
+}
+#presetSelect .preset {
+    border: 1px solid white;
+    text-decoration: none;
+    color: white;
+    padding: 5px;
+    margin: 10px;
+}
+#presetSelect .preset:hover {
+    border: 1px solid yellow;
+}
+
+#warningElem {
+    padding: 5px 35px;
+    margin: 0;
+    background-color: #111;
+}
+
+canvas {
+    border-top: 1px solid grey;
+    border-bottom: 1px solid grey;
+}

@@ -146,7 +146,7 @@ class GameOfLife {
 	}
 	getTmpArray() {
 		let newArray = [];
-		for (var i = 0; i < this.array.length; i++) {
+		for (let i = 0; i < this.array.length; i++) {
     		newArray[i] = this.array[i].slice();
 		}
 		return newArray;
@@ -156,14 +156,17 @@ class GameOfLife {
 		for (let r=0; r < this.array.length; r++) {
 			for (let c=0; c < this.array[r].length; c++) {
 				const neighs = this.getNeighbors(r,c);
-				if (this.array[r][c] === 1) {
-					if (neighs.length > 3 || neighs.length < 2) {
-						tmpArray[r][c] = 0;
-					}
-				} else if (this.array[r][c] === 0) {
-					if (neighs.length === 3) {
-						tmpArray[r][c] = 1;
-					}
+				switch (this.array[r][c]) {
+					case 0:
+						if (neighs.length === 3) {
+							tmpArray[r][c] = 1;
+						}
+						break;
+					case 1:
+						if (neighs.length > 3 || neighs.length < 2) {
+							tmpArray[r][c] = 0;
+						}
+						break;
 				}
 			}
 		}
@@ -238,8 +241,9 @@ let idx = 0;
 
 function loop() {
 	if (idx % 2 === 0) {
-		game.step();
 		drawCanvasBasedOn(game.array);
+	} else {
+		game.step();
 	}
 	idx++;
 }
