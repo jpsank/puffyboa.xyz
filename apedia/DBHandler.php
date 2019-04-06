@@ -12,43 +12,36 @@ class DBHandler {
     }
 
     function init() {
-        // Create table if not already created
-        $sql = "CREATE TABLE IF NOT EXISTS Entities (
+        // Create tables if not already created
+
+        $sql = "CREATE TABLE IF NOT EXISTS Topics (
 		id INTEGER PRIMARY KEY,
-		type TEXT NOT NULL,
-		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-		data LONGTEXT NOT NULL
+		name TEXT NOT NULL
 		)";
         $this->db->exec($sql);
-
-//        $sql = "CREATE TABLE IF NOT EXISTS Topics (
-//		id INTEGER PRIMARY KEY,
-//		name TEXT NOT NULL
-//		)";
-//        $this->db->exec($sql);
-//        $sql = "CREATE TABLE IF NOT EXISTS Posts (
-//		id INTEGER PRIMARY KEY,
-//		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-//		type TEXT NOT NULL,
-//		text TEXT NOT NULL,
-//		parent INTEGER NOT NULL,
-//		post_user INTEGER NOT NULL
-//		)";
-//        $this->db->exec($sql);
-//        $sql = "CREATE TABLE IF NOT EXISTS Users (
-//		id INTEGER PRIMARY KEY,
-//		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-//		username VARCHAR(50) NOT NULL UNIQUE,
-//		password VARCHAR(255) NOT NULL
-//		)";
-//        $this->db->exec($sql);
-//        $sql = "CREATE TABLE IF NOT EXISTS Votes (
-//		id INTEGER PRIMARY KEY,
-//		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-//		post_id INTEGER NOT NULL,
-//		user_id INTEGER NOT NULL
-//		)";
-//        $this->db->exec($sql);
+        $sql = "CREATE TABLE IF NOT EXISTS Posts (
+		id INTEGER PRIMARY KEY,
+		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		type TEXT NOT NULL,
+		text TEXT NOT NULL,
+		parent INTEGER NOT NULL,
+		post_user INTEGER NOT NULL
+		)";
+        $this->db->exec($sql);
+        $sql = "CREATE TABLE IF NOT EXISTS Users (
+		id INTEGER PRIMARY KEY,
+		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		username VARCHAR(50) NOT NULL UNIQUE,
+		password VARCHAR(255) NOT NULL
+		)";
+        $this->db->exec($sql);
+        $sql = "CREATE TABLE IF NOT EXISTS Votes (
+		id INTEGER PRIMARY KEY,
+		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		post_id INTEGER NOT NULL,
+		user_id INTEGER NOT NULL
+		)";
+        $this->db->exec($sql);
 
         $this->initTopics();
     }
@@ -60,127 +53,206 @@ class DBHandler {
             "AP Research", "AP Seminar", "AP Spanish", "AP Statistics", "AP Studio Art",
             "AP U.S. Government & Politics", "AP U.S. History", "AP World History"];
         foreach ($topics as $t) {
-            $check = $this->fetchEntities("topic",["name"=>$t]);
-            if ($check === []) {
+            $check = $this->selectTopicsBySQL("name='$t'")->fetchArray();
+            if (empty($check)) {
                 $this->insertTopic($t);
             }
         }
     }
-
-    function insertEntity($type, $data) {
-        $encoded = json_encode($data);
-
-        $sql = "INSERT INTO Entities (type, data) VALUES (:type, :data);";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':type', $type);
-        $stmt->bindParam(':data', $encoded);
-        return $stmt->execute();
+    function lastInsertRowID() {
+        return $this->db->lastInsertRowID();
     }
+
+    // Low-level Insert functions
 
     function insertTopic($name) {
-        $data = [
-            "name" => $name,
-        ];
-        return $this->insertEntity("topic", $data);
+        $sql = "INSERT INTO Topics (name) VALUES (:name);";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':name', $name);
+        return $stmt->execute();
+    }
+    function insertPost($type, $text, $parent, $post_user) {
+        $sql = "INSERT INTO Posts (type, text, parent, post_user) VALUES (:type, :text, :parent, :post_user);";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':type', $type);
+        $stmt->bindParam(':text', $text);
+        $stmt->bindParam(':parent', $parent);
+        $stmt->bindParam(':post_user', $post_user);
+        return $stmt->execute();
     }
     function insertQuestion($text, $topic_id, $post_user_id) {
-        $data = [
-            "text" => $text,
-            "parent" => $topic_id,
-            "post_user" => $post_user_id,
-        ];
-        return $this->insertEntity("question",$data);
+        return $this->insertPost("question", $text, $topic_id, $post_user_id);
     }
     function insertAnswer($text, $question_id, $post_user_id) {
-        $data = [
-            "text" => $text,
-            "parent" => $question_id,
-            "post_user" => $post_user_id,
-        ];
-        return $this->insertEntity("answer",$data);
+        return $this->insertPost("answer", $text, $question_id, $post_user_id);
     }
     function insertComment($text, $parent_id, $post_user_id) {
-        $data = [
-            "text" => $text,
-            "parent" => $parent_id,
-            "post_user" => $post_user_id,
-        ];
-        return $this->insertEntity("comment",$data);
+        return $this->insertPost("comment", $text, $parent_id, $post_user_id);
     }
 
     function insertUser($username, $password) {
-        $data = [
-            "username" => $username,
-            "password" => $password,
-        ];
-        return $this->insertEntity("user",$data);
+        $sql = "INSERT INTO Users (username, password) VALUES (:username, :password);";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':username', $username);
+        $stmt->bindParam(':password', $password);
+        return $stmt->execute();
     }
     function insertVote($post_id, $user_id) {
-        $data = [
-            "post_id" => $post_id,  // id of post they upvoted
-            "user" => $user_id,  // who voted
-        ];
-        return $this->insertEntity("vote",$data);
+        $sql = "INSERT INTO Votes (post_id, user_id) VALUES (:post_id, :user_id);";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':post_id', $post_id);
+        $stmt->bindParam(':user_id', $user_id);
+        return $stmt->execute();
     }
 
-    function selectEntityById($id) {
-        $sql = "SELECT * FROM Entities WHERE id=$id";
+    // High-level Post functions
+
+    function postQuestion($text, $topic_name, $post_user_id) {
+        $matches = $this->selectTopicsBySQL("name=$topic_name");
+        $topic_id = $matches[0]["id"];
+
+        $this->insertQuestion($text, $topic_id, $post_user_id);
+    }
+
+    // Low-level Select functions
+
+    function selectBySQL($table, $condition) {
+        if (!empty($condition)) {
+            $sql = "SELECT * FROM $table WHERE $condition";
+        } else {
+            $sql = "SELECT * FROM $table";
+        }
         $stmt = $this->db->prepare($sql);
-        $result = $stmt->execute();
-        return $result->fetchArray();
+        return $stmt->execute();
     }
-    function fetchEntityById($id) {
-        $arr = $this->selectEntityById($id);
-        $arr["data"] = json_decode($arr["data"]);
-        return $arr;
+
+    function selectTopicById($id) {
+        return $this->selectBySQL("Topics","id=$id");
     }
-    function getEntityDataById($id) {
-        return json_decode($this->selectEntityById($id)["data"]);
+    function selectPostById($id) {
+        return $this->selectBySQL("Posts","id=$id");
     }
-    function returnEntityParentList($id) {
-        $entity = $this->selectEntityById($id);
-        $entity["data"] = json_decode($entity["data"]);
+    function selectUserById($id) {
+        return $this->selectBySQL("Users","id=$id");
+    }
+    function selectVoteById($id) {
+        return $this->selectBySQL("Votes","id=$id");
+    }
+
+    function selectPostsByType($type) {
+        if (is_array($type)) {  // match multiple types
+            $cond = "type='" . implode("' OR type='",$type);
+            return $this->selectBySQL("Posts", $cond);
+        } else {  // match for one type
+            return $this->selectBySQL("Posts", "type='$type'");
+        }
+    }
+
+//    function selectByMatch($table, $match) {
+//        if (!empty($match)) {
+//            $list = array_map(function ($key, $val) { return "$key=$val"; }, $match);
+//            $cond = implode(" OR ", $list);
+//            return $this->selectBySQL($table, $cond);
+//        } else {
+//            return $this->selectBySQL($table, null);
+//        }
+//    }
+    function selectTopicsBySQL($sql) {
+        return $this->selectBySQL("Topics", $sql);
+    }
+    function selectPostsBySQL($sql) {
+        return $this->selectBySQL("Posts", $sql);
+    }
+    function selectUsersBySQL($sql) {
+        return $this->selectBySQL("Users", $sql);
+    }
+    function selectVotesBySQL($sql) {
+        return $this->selectBySQL("Votes", $sql);
+    }
+
+    function selectQuestionsByTopic($topic_id) {
+        return $this->selectPostsBySQL("type='question' AND parent=$topic_id");
+    }
+    function selectAnswersToQuestion($question_id) {
+        return $this->selectPostsBySQL("type='answer' AND parent=$question_id");
+    }
+    function selectCommentsUnder($parent_id) {
+        return $this->selectPostsBySQL("type='comment' AND parent=$parent_id");
+    }
+    function selectVotesOn($post_id) {
+        return $this->selectVotesBySQL("post_id=$post_id");
+    }
+
+    // Mid-level Fetch functions
+
+    function fetchTopicById($id) {
+        return $this->selectTopicById($id)->fetchArray();
+    }
+    function fetchPostById($id) {
+        return $this->selectPostById($id)->fetchArray();
+    }
+    function fetchUserById($id) {
+        return $this->selectUserById($id)->fetchArray();
+    }
+    function fetchVoteById($id) {
+        return $this->selectVoteById($id)->fetchArray();
+    }
+
+    private function fetchResultArrays(SQLite3Result $result) {
+        while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+            yield $row;
+        }
+    }
+
+    function fetchQuestionsByTopic($topic_id) {
+        $result = $this->selectQuestionsByTopic($topic_id);
+        return iterator_to_array($this->fetchResultArrays($result));
+    }
+    function fetchAnswersToQuestion($question_id) {
+        $result = $this->selectAnswersToQuestion($question_id);
+        return iterator_to_array($this->fetchResultArrays($result));
+    }
+    function fetchCommentsUnder($parent_id) {
+        $result = $this->selectCommentsUnder($parent_id);
+        return iterator_to_array($this->fetchResultArrays($result));
+    }
+    function fetchVotesOn($post_id) {
+        $result = $this->selectVotesOn($post_id);
+        return iterator_to_array($this->fetchResultArrays($result));
+    }
+
+    // High-level Find functions
+
+    function findPostParentList($id) {
+        $current = $this->fetchPostById($id);
         $parents = [];
-        while ($entity["data"]->parent) {
-            $entity = $this->selectEntityById($entity["data"]->parent);
-            $entity["data"] = json_decode($entity["data"]);
-            array_push($parents,$entity);
+        while (array_key_exists("parent",$current)) {
+            if ($current["type"] == "question") {
+                $current = $this->fetchTopicById($current["parent"]);
+            } else {
+                $current = $this->fetchPostById($current["parent"]);
+            }
+            array_push($parents,$current);
         }
         $parents = array_reverse($parents);
         return $parents;
     }
 
-    function selectEntitiesByType($type) {
-        if (is_array($type)) {  // match multiple types
-            $sql = "SELECT * FROM Entities WHERE type='$type[0]'";
-            foreach (array_slice($type,1) as $t) {
-                $sql .= " OR type='$t'";
-            }
-        } else if ($type === null) {  // no type specified, match all types
-            $sql = "SELECT * FROM Entities";
-        } else {  // match for one type
-            $sql = "SELECT * FROM Entities WHERE type='$type'";
-        }
-        $stmt = $this->db->prepare($sql);
-        return $stmt->execute();
-    }
-
-    function searchPosts($search) {  // search questions
+    function searchPosts($search) {  // search function
         $search = strtolower($search);
-        $result = $this->selectEntitiesByType(["question", "topic"]);
+        $result = $this->selectPostsByType("question");
         $final = [];
         while($arr = $result->fetchArray(SQLITE3_ASSOC)) {
-            $arr["data"] = json_decode($arr["data"]);
             switch ($arr["type"]) {
                 case "topic":
-                    $name = strtolower($arr["data"]->name);
+                    $name = strtolower($arr["name"]);
                     if (strpos($name, $search) !== false) {
                         similar_text($search, $name, $arr["score"]);
                         $final[$arr["id"]] = $arr;
                     }
                     break;
                 default:
-                    $text = strtolower($arr["data"]->text);
+                    $text = strtolower($arr["text"]);
                     if (strpos($text, $search) !== false) {
                         similar_text($search, $text, $arr["score"]);
                         $final[$arr["id"]] = $arr;
@@ -192,44 +264,7 @@ class DBHandler {
         return $final;
     }
 
-    function fetchEntities($type, $match_data) {
-        $result = $this->selectEntitiesByType($type);
 
-        $final = [];
-        while($arr = $result->fetchArray(SQLITE3_ASSOC)) {
-            $arr["data"] = json_decode($arr["data"]);
-            if (!array_diff($match_data, (array)$arr["data"])) {  // if contains all values
-                array_push($final, $arr);
-            }
-        }
-        return $final;
-    }
-    function fetchQuestionsByTopic($topic_id) {
-        return $this->fetchEntities("question",["parent"=>$topic_id]);
-    }
-    function fetchQuestionAnswers($question_id) {
-        return $this->fetchEntities("answer",["parent"=>$question_id]);
-    }
-    function fetchComments($parent_id) {
-        return $this->fetchEntities("comment",["parent"=>$parent_id]);
-    }
-    function fetchVotes($post_id) {
-        return $this->fetchEntities("vote",["post_id"=>$post_id]);
-    }
-    function fetchChildren($parent_id) {
-        return $this->fetchEntities(null,["parent"=>$parent_id]);
-    }
-
-    function postQuestion($text, $topic_name, $post_user_id) {
-        $matches = $this->fetchEntities("topic", ["name" => $topic_name]);
-        $topic_id = $matches[0]["id"];
-
-        $this->insertQuestion($text, $topic_id, $post_user_id);
-    }
-
-    function lastInsertRowID() {
-        return $this->db->lastInsertRowID();
-    }
 
     function close() {
         $this->db = null;

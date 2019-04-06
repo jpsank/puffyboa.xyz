@@ -86,41 +86,63 @@ div.question {
 }
 div.question_title {
 }
-.answers_container ul {
-    border-bottom: 1px dashed lightgrey;
-    border-left: 1px solid lightgrey;
-    border-top: 1px solid lightgrey;
-    padding-bottom: 10px;
-    margin-left: 3vw;
-    padding-left: 5px;
-}
-div.answer {
-    padding: 10px 1vw 0 1vw;
-    margin-top: 10px;
-    font-size: 1.1em;
-    background-color: whitesmoke;
-}
-div.answer p {
-    margin: 0 0 30px 0;
-}
-div.comment {
-    padding: 10px 1vw;
-}
-div.comment p {
-    margin: 0 0 3px 0;
-}
-.num_answers {
-    padding-bottom: 10px;
-    border-bottom: 1px solid lightgrey;
+.questions_container {
+    padding-left: 2vw;
 }
 .num_questions {
     padding: 10px 0;
     border-bottom: 1px solid lightgrey;
 }
-.questions_container {
-    padding-left: 2vw;
+.num_answers {
+    padding-bottom: 10px;
+    border-bottom: 1px solid lightgrey;
+}
+.answers_container ul {
+    border-bottom: 1px dashed lightgrey;
+    border-left: 1px solid lightgrey;
+    border-top: 1px solid lightgrey;
+    margin-bottom: 15px;
+    margin-left: 3vw;
+    padding-left: 5px;
+}
+div.post.answer {
+    padding: 10px 1vw 0 1vw;
+    margin-top: 10px;
+    font-size: 1.1em;
+    background-color: whitesmoke;
+}
+div.post.answer p.text {
+    margin: 0 0 30px 0;
+}
+div.post.comment {
+    padding: 10px 1vw;
+}
+div.post.comment p.text {
+    margin: 0 0 3px 0;
+}
+div.post a.post_user {
+    margin: 0 8px 0 0;
+    display: inline;
+    font-size: .8em;
+    color: grey;
 }
 
+p.login_link {
+    display: block;
+    padding: 5px;
+    margin: 0;
+}
+p.login_link a {
+    font-size: .8em;
+    text-decoration: none;
+    color: grey;
+}
+p.login_link:hover {
+    background-color: rgba(0,0,0,.025);
+}
+p.login_link a:hover {
+    text-decoration: underline;
+}
 
 
 form.submit {
@@ -184,7 +206,6 @@ form.submit.block textarea[name=text]::placeholder {
 }
 
 
-
 form#search {
      text-align: center;
 }
@@ -202,13 +223,14 @@ form#search input[type=submit] {
 }
 
 
-div:target {
-    background: lightyellow;
+
+@-webkit-keyframes targetYellow {
+    0% {background-color: lightyellow;}
+    100% {background-color: white;}
 }
 div:target {
-    -webkit-transition: background 2s;
-    transition: background 2s;
-    background: white;
+    -webkit-animation-name: targetYellow;
+    -webkit-animation-duration: 2s;
 }
 
 

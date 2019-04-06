@@ -12,7 +12,6 @@ if (!file_exists($db_folder)) {
 
 $handler = new DBHandler("$db_folder/apedia.db");
 $handler->init();
-//$handler->postQuestion("What is enthalpy?", "AP Chem", "null");
 
 ?>
 
@@ -54,29 +53,29 @@ $handler->init();
         $id = $arr["id"];
         switch ($arr["type"]) {
             case "topic":
-                $name = $arr["data"]->name;
+                $name = $arr["name"];
                 echo "<div class='result'><a class='topic' href='topic.php?id=$id'>$name</a></div>";
                 break;
             default:
-                $parentList = $handler->returnEntityParentList($id);
+                $parentList = $handler->findPostParentList($id);
                 array_push($parentList, $arr);
                 $html = "";
                 foreach ($parentList as $i=>$parent) {
                     $pid = $parent["id"];
                     if ($i == 0) {
-                        $name = $parent["data"]->name;
+                        $name = $parent["name"];
                         $html .= "<a class='topic' href='topic.php?id=$pid'>$name</a>";
                         $html .= ">";
                     } else if ($i == 1) {
-                        $text = constrainString($parent["data"]->text);
+                        $text = constrainString($parent["text"]);
                         $html .= "<a class='question' href='question.php?id=$pid'>$text</a>";
                     } else if ($i == 2) {
                         $qid = $parentList[1]["id"];
-                        $text = constrainString($parent["data"]->text);
+                        $text = constrainString($parent["text"]);
                         $html .= "<a class='answer' href='question.php?id=$qid#$pid'>$text</a>";
                     } else {
                         $qid = $parentList[1]["id"];
-                        $text = constrainString($parent["data"]->text);
+                        $text = constrainString($parent["text"]);
                         $html .= "<a class='comment' href='question.php?id=$qid#$pid'>$text</a>";
                     }
                 }
@@ -98,11 +97,10 @@ $handler->init();
         echo "</div>";
     } else {
         echo "<div class='topics_container'>";
-        $results = $handler->selectEntitiesByType("topic");
+        $results = $handler->selectTopicsBySQL(null);
         while ($arr = $results->fetchArray(SQLITE3_ASSOC)) {
-            $arr["data"] = json_decode($arr["data"]);
             $id = $arr["id"];
-            $name = $arr["data"]->name;
+            $name = $arr["name"];
             echo "<div><a href='topic.php?id=$id'>$name</a></div>";
         }
         echo "</div>";

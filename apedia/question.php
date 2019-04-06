@@ -36,46 +36,47 @@ $handler->init();
 
     function createSubmitForm($id, $text, $block) {
         $block = $block ? "block": "";
-        echo "<form onfocusout='focusOut(this)' onfocusin='focusIn(this)' class='submit $block' method='post'>
+        if ($_SESSION["loggedin"] === true) {
+            echo "<form onfocusout='focusOut(this)' onfocusin='focusIn(this)' class='submit $block' method='post'>
 <textarea name='text' placeholder='$text' required></textarea>
 <input type='hidden' name='parent_id' value=$id>
 <input type='submit'>
 </form>";
+        } else {
+            echo "<p class='login_link'><a href='login.php'>Login to <span>$text</span></a></p>";
+        }
     }
 
     function displayPost($post_arr) {
         global $handler;
         $id = $post_arr["id"];
         $type = $post_arr["type"];
-        $text = $post_arr["data"]->text;
+        $text = $post_arr["text"];
 
-        $uid = $post_arr["data"]->post_user;
-        $username = $handler->getEntityDataById($uid)->username;
+        $post_user = $handler->fetchUserById($post_arr["post_user"]);
+        $username = $post_user["username"];
 
         echo "<div class='post $type' id='$id'>";
-        echo "<p>$text</p><p>$username</p>";
+        echo "<a class='post_user'>$username</a><p class='text'>$text</p>";
         switch ($type) {
-            case "question":
-                createSubmitForm($id, "Add an answer", false);
-                break;
             case "answer":
-                createSubmitForm($id, "Comment", false);
+                createSubmitForm($id, "Comment", true);
                 break;
             case "comment":
-                createSubmitForm($id, "Reply", false);
+                createSubmitForm($id, "Reply", true);
                 break;
         }
         echo "</div>";
     }
-    function unloadChildren($post_arr) {
+    function unloadComments($post_arr) {
         global $handler;
         displayPost($post_arr);
         $id = $post_arr["id"];
-        $children = $handler->fetchChildren($id);
+        $children = $handler->fetchCommentsUnder($id);
         if (!empty($children)) {
             echo "<ul>";
             foreach ($children as $c) {
-                unloadChildren($c);
+                unloadComments($c);
             }
             echo "</ul>";
         }
@@ -84,13 +85,13 @@ $handler->init();
     if ($_GET["id"] == "") {
     } else {
         $question_id = (int)$_GET["id"];
-        $q_arr = $handler->fetchEntityById($question_id);
+        $q_arr = $handler->fetchPostById($question_id);
 
 
         if (isset($_POST["text"]) && isset($_POST["parent_id"])) {
             $text = $_POST["text"];
             $parent_id = $_POST["parent_id"];
-            $parent_arr = $handler->selectEntityById($parent_id);
+            $parent_arr = $handler->fetchPostById($parent_id);
             switch ($parent_arr["type"]) {
                 case "question":
                     $handler->insertAnswer($text, $parent_id, 1);
@@ -112,10 +113,12 @@ $handler->init();
 
 
         if ($q_arr) {
-            $text = $q_arr["data"]->text;
-            $t_arr = $handler->fetchEntityById($q_arr["data"]->parent);
+            $text = $q_arr["text"];
+
+            $t_arr = $handler->fetchTopicById($q_arr["parent"]);
             $topic_id = $t_arr["id"];
-            $name = $t_arr["data"]->name;
+            $name = $t_arr["name"];
+
             echo "<div class='question_header'>";
             echo "<h3><a href='topic.php?id=$topic_id'>$name</a></h3>";
             echo "<div class='question_title' id='$question_id'>";
@@ -124,16 +127,16 @@ $handler->init();
             echo "</div>";
             echo "</div>";
 
-            $children = $handler->fetchChildren($question_id);
+            $answers = $handler->fetchAnswersToQuestion($question_id);
 
-            $len_children = sizeof($children);
-            $s = $len_children==1 ? "Answer": "Answers";
-            echo "<h3 class='num_answers'>$len_children $s</h3>";
+            $len_answers = sizeof($answers);
+            $s = $len_answers==1 ? "Answer": "Answers";
+            echo "<h3 class='num_answers'>$len_answers $s</h3>";
 
             echo "<div class='answers_container'>";
 
-            foreach ($children as $child) {
-                unloadChildren($child);
+            foreach ($answers as $answer) {
+                unloadComments($answer);
             }
             echo "</div>";
         } else {
