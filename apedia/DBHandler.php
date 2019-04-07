@@ -63,6 +63,8 @@ class DBHandler {
         return $this->db->lastInsertRowID();
     }
 
+
+
     // Low-level Insert functions
 
     function insertTopic($name) {
@@ -183,6 +185,10 @@ class DBHandler {
         return $this->selectVotesBySQL("post_id=$post_id");
     }
 
+    function selectUserByName($username) {
+        return $this->selectBySQL("Users","username='$username'");
+    }
+
     // Mid-level Fetch functions
 
     function fetchTopicById($id) {
@@ -219,6 +225,10 @@ class DBHandler {
     function fetchVotesOn($post_id) {
         $result = $this->selectVotesOn($post_id);
         return iterator_to_array($this->fetchResultArrays($result));
+    }
+
+    function fetchUserByName($username) {
+        return $this->selectUserByName($username)->fetchArray();
     }
 
     // High-level Find functions

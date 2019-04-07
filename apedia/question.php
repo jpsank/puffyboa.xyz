@@ -4,14 +4,10 @@ include "DBHandler.php";
 
 $db_folder = "../db";
 
-if (!file_exists($db_folder)) {
-    $oldmask = umask(0);
-    mkdir($db_folder, 0777);
-    umask($oldmask);
-}
-
 $handler = new DBHandler("$db_folder/apedia.db");
 $handler->init();
+
+session_start();
 
 ?>
 
@@ -23,6 +19,17 @@ $handler->init();
 </head>
 
 <body>
+
+<ul class="nav">
+    <?php
+    if ($_SESSION["loggedin"] === true) {
+        $username = $_SESSION["username"];
+        echo "<li>Logged in as $username. <a href='logout.php'>Log out</a></li>";
+    } else {
+        echo "<li><a href='login.php'>Log in</a> or <a href='register.php'>Sign up</a></li>";
+    }
+    ?>
+</ul>
 
 
 <div class="left title">
@@ -57,7 +64,7 @@ $handler->init();
         $username = $post_user["username"];
 
         echo "<div class='post $type' id='$id'>";
-        echo "<a class='post_user'>$username</a><p class='text'>$text</p>";
+        echo "<p class='post_user'>$username</p><p class='text'>$text</p>";
         switch ($type) {
             case "answer":
                 createSubmitForm($id, "Comment", true);
@@ -94,17 +101,17 @@ $handler->init();
             $parent_arr = $handler->fetchPostById($parent_id);
             switch ($parent_arr["type"]) {
                 case "question":
-                    $handler->insertAnswer($text, $parent_id, 1);
+                    $handler->insertAnswer($text, $parent_id, $_SESSION["id"]);
                     $last_id = $handler->lastInsertRowID();
                     header("Refresh:0; url=question.php?id=$question_id#$last_id");
                     break;
                 case "answer":
-                    $handler->insertComment($text, $parent_id, 1);
+                    $handler->insertComment($text, $parent_id, $_SESSION["id"]);
                     $last_id = $handler->lastInsertRowID();
                     header("Refresh:0; url=question.php?id=$question_id#$last_id");
                     break;
                 case "comment":
-                    $handler->insertComment($text, $parent_id, 1);
+                    $handler->insertComment($text, $parent_id, $_SESSION["id"]);
                     $last_id = $handler->lastInsertRowID();
                     header("Refresh:0; url=question.php?id=$question_id#$last_id");
                     break;

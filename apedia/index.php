@@ -4,14 +4,10 @@ include "DBHandler.php";
 
 $db_folder = "../db";
 
-if (!file_exists($db_folder)) {
-    $oldmask = umask(0);
-    mkdir($db_folder, 0777);
-    umask($oldmask);
-}
-
 $handler = new DBHandler("$db_folder/apedia.db");
 $handler->init();
+
+session_start();
 
 ?>
 
@@ -23,6 +19,17 @@ $handler->init();
 </head>
 
 <body id="index">
+
+<ul class="nav">
+    <?php
+    if ($_SESSION["loggedin"] === true) {
+        $username = $_SESSION["username"];
+        echo "<li>Logged in as $username. <a href='logout.php'>Log out</a></li>";
+    } else {
+        echo "<li><a href='login.php'>Log in</a> or <a href='register.php'>Sign up</a></li>";
+    }
+    ?>
+</ul>
 
 <div class="jumbo title">
     <a href="index.php">

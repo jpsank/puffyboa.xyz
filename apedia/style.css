@@ -84,6 +84,9 @@ div.topic {
 div.question {
     padding: 5px 0;
 }
+div.question .post_user {
+    font-size: .8em;
+}
 div.question_title {
 }
 .questions_container {
@@ -120,9 +123,8 @@ div.post.comment {
 div.post.comment p.text {
     margin: 0 0 3px 0;
 }
-div.post a.post_user {
-    margin: 0 8px 0 0;
-    display: inline;
+div.post .post_user {
+    margin: 0 0 5px 0;
     font-size: .8em;
     color: grey;
 }
@@ -153,7 +155,7 @@ form.submit {
 form.submit textarea {
     resize: none;
     height: 30px;
-    padding: 4px 4px;
+    padding: 4px 0;
     opacity: 1;
     border: none;
     outline: none;
@@ -234,3 +236,50 @@ div:target {
 }
 
 
+form#login {
+
+}
+form#login label {
+    font-weight: bold;
+    font-size: .9em;
+}
+form#login input[type=text], form#login input[type=password] {
+    width: 300px;
+    display: block;
+    padding: 5px;
+    margin: 4px 0 10px 0;
+}
+form#login input#username {
+
+}
+form#login input#password {
+
+}
+form#login input[type=submit] {
+    border: 1px solid grey;
+    cursor: pointer;
+    padding: 5px 10px;
+    margin-bottom: 5px;
+}
+form#login input[type=submit]:hover {
+    background-color: whitesmoke;
+}
+
+.err_message {
+    color: red;
+}
+
+
+ul.nav {
+    list-style: none;
+    text-align: right;
+    font-size: .8em;
+    margin: 0;
+}
+ul.nav li a {
+    text-decoration: none;
+    color: grey;
+}
+ul.nav li a:hover {
+    text-decoration: underline;
+}
