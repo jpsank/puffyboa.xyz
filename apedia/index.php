@@ -24,7 +24,8 @@ session_start();
     <?php
     if ($_SESSION["loggedin"] === true) {
         $username = $_SESSION["username"];
-        echo "<li>Logged in as $username. <a href='logout.php'>Log out</a></li>";
+        $id = $_SESSION["id"];
+        echo "<li>Logged in as <a href='user.php?id=$id'>$username</a>. <a href='logout.php'>Log out</a></li>";
     } else {
         echo "<li><a href='login.php'>Log in</a> or <a href='register.php'>Sign up</a></li>";
     }
@@ -32,9 +33,9 @@ session_start();
 </ul>
 
 <div class="jumbo title">
-    <a href="index.php">
-        <h1><span class="A">A</span><span class="P">P</span>edia</h1>
-    </a>
+    <h1>
+        <a href="index.php"><span class="A">A</span><span class="P">P</span>edia</a>
+    </h1>
     <p>Crowd-sourced Q and A for AP classes</p>
 </div>
 
@@ -72,7 +73,6 @@ session_start();
                     if ($i == 0) {
                         $name = $parent["name"];
                         $html .= "<a class='topic' href='topic.php?id=$pid'>$name</a>";
-                        $html .= ">";
                     } else if ($i == 1) {
                         $text = constrainString($parent["text"]);
                         $html .= "<a class='question' href='question.php?id=$pid'>$text</a>";

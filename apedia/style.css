@@ -47,19 +47,18 @@ div.search_results {
     flex-direction: column;
 }
 div.search_results div.result {
-    padding: 20px 10px 5px 10px;
+    padding: 20px 0 5px 0;
     display: flex;
 }
 .result a.topic, a.question, a.answer, a.comment {
-    margin: 0 10px;
+    margin: 0;
 }
-.result a.topic {
-}
-.result a.question {
-}
-.result a.answer {
-}
-.result a.comment {
+.result a.question::before, a.answer::before, a.comment::before {
+    content: "/";
+    padding: 0 10px;
+    color: black;
+    display: inline-block;
+    font-size: .8em;
 }
 div.topics_container {
     display: flex;
@@ -87,7 +86,46 @@ div.question {
 div.question .post_user {
     font-size: .8em;
 }
-div.question_title {
+div.question .post_user a {
+    text-decoration: none;
+    color: black;
+}
+div.question .post_user a:hover {
+    text-decoration: underline;
+}
+div.question_title h1 {
+}
+.vote_container {
+    display: inline;
+    margin-right: 10px;
+    float: right;
+}
+.vote_container form {
+    display: inline-flex;
+    align-items: baseline;
+    margin: 0;
+}
+.vote_container form input[type=submit] {
+    background-color: transparent;
+    padding: 0 7px;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    font-size: 1em;
+    color: lightgrey;
+}
+.vote_container form input[type=submit]:hover {
+    color: grey;
+}
+.vote_container.already form input[type=submit] {
+    color: green;
+}
+.vote_container.already form input[type=submit]:hover {
+    color: lightgreen;
+}
+.vote_container.no_login span {
+    color: rgba(0,0,0,.05);
+    text-decoration: none;
 }
 .questions_container {
     padding-left: 2vw;
@@ -126,7 +164,13 @@ div.post.comment p.text {
 div.post .post_user {
     margin: 0 0 5px 0;
     font-size: .8em;
+}
+div.post .post_user a {
     color: grey;
+    text-decoration: none;
+}
+div.post .post_user a:hover {
+    text-decoration: underline;
 }
 
 p.login_link {
@@ -220,8 +264,13 @@ form#search input[type=text] {
     border: 1px solid lightgrey;
 }
 form#search input[type=submit] {
-    border: 0;
+    border: 1px solid grey;
+    border-radius: 5px;
     cursor: pointer;
+    outline: none;
+}
+form#search input[type=submit]:hover {
+    background-color: whitesmoke;
 }
 
 
@@ -283,3 +332,50 @@ ul.nav li a {
 ul.nav li a:hover {
     text-decoration: underline;
 }
+
+div.user_post {
+    margin: 10px 0 0 0;
+    padding: 2px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+}
+.user_post a {
+    margin: 0;
+    font-size: .8em;
+}
+.user_post a:hover {
+    text-decoration: underline;
+}
+.user_post a.question::before, a.answer::before, a.comment::before {
+    content: "/";
+    padding: 0 5px;
+    color: black;
+    display: inline-block;
+    font-size: .8em;
+}
+.user_post a.final {
+    font-size: 1em;
+    width: 100%;
+    color: black;
+    text-decoration: none;
+    padding: 5px 0;
+}
+.user_post a.final:hover {
+    background-color: whitesmoke;
+}
+.user_post a.final::before {
+    content: "";
+    padding: 0;
+}
+.user_post.question {
+    border: 2px solid lightgrey;
+}
+.user_post.answer {
+    border: 1px solid lightgrey;
+}
+.user_post.comment {
+    border: 1px dashed lightgrey;
+}
+
+

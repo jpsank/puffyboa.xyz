@@ -24,7 +24,8 @@ session_start();
     <?php
     if ($_SESSION["loggedin"] === true) {
         $username = $_SESSION["username"];
-        echo "<li>Logged in as $username. <a href='logout.php'>Log out</a></li>";
+        $id = $_SESSION["id"];
+        echo "<li>Logged in as <a href='user.php?id=$id'>$username</a>. <a href='logout.php'>Log out</a></li>";
     } else {
         echo "<li><a href='login.php'>Log in</a> or <a href='register.php'>Sign up</a></li>";
     }
@@ -32,9 +33,7 @@ session_start();
 </ul>
 
 <div class="left title">
-    <a href="index.php">
-        <h1><span class="A">A</span><span class="P">P</span>edia</h1>
-    </a>
+    <h1><a href="index.php"><span class="A">A</span><span class="P">P</span>edia</a></h1>
 </div>
 
 <div id="main">
@@ -45,6 +44,14 @@ session_start();
         $topic_id = (int)$_GET["id"];
         $arr = $handler->fetchTopicById($topic_id);
         if ($arr) {
+
+            if (isset($_POST["vote_id"])) {
+                if ($_SESSION["loggedin"] === true) {
+                    $vote_id = $_POST["vote_id"];
+                    $handler->toggleVoteOn($vote_id, $_SESSION["id"]);
+                    header("location: topic.php?id=$topic_id#$vote_id");
+                }
+            }
 
             if (isset($_POST["text"])) {
                 $text = $_POST["text"];
@@ -67,6 +74,7 @@ session_start();
             echo "</div>";
 
             $questions = $handler->fetchQuestionsByTopic($topic_id);
+            $questions = $handler->sortPostsByVotes($questions);
             $len_questions = sizeof($questions);
             $s = $len_questions == 1 ? "Question" : "Questions";
             echo "<h3 class='num_questions'>$len_questions $s</h3>";
@@ -78,7 +86,11 @@ session_start();
                 $uid = $q_arr["post_user"];
                 $post_user = $handler->fetchUserById($uid);
                 $username = $post_user["username"];
-                echo "<div class='question' id='$qid'><p class='text'><a href='question.php?id=$qid'>$text</a></p><p class='post_user'>$username</p></div>";
+                echo "<div class='question' id='$qid'>";
+                $handler->createVoteContainerHTML($qid);
+                echo "<p class='text'><a href='question.php?id=$qid'>$text</a></p>
+<p class='post_user'><a href='user.php?id=$uid'>$username</a></p>";
+                echo "</div>";
             }
             echo "</div>";
         } else {

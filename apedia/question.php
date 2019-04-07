@@ -24,7 +24,8 @@ session_start();
     <?php
     if ($_SESSION["loggedin"] === true) {
         $username = $_SESSION["username"];
-        echo "<li>Logged in as $username. <a href='logout.php'>Log out</a></li>";
+        $id = $_SESSION["id"];
+        echo "<li>Logged in as <a href='user.php?id=$id'>$username</a>. <a href='logout.php'>Log out</a></li>";
     } else {
         echo "<li><a href='login.php'>Log in</a> or <a href='register.php'>Sign up</a></li>";
     }
@@ -33,9 +34,7 @@ session_start();
 
 
 <div class="left title">
-    <a href="index.php">
-        <h1><span class="A">A</span><span class="P">P</span>edia</h1>
-    </a>
+    <h1><a href="index.php"><span class="A">A</span><span class="P">P</span>edia</a></h1>
 </div>
 
 <div id="main">
@@ -62,9 +61,11 @@ session_start();
 
         $post_user = $handler->fetchUserById($post_arr["post_user"]);
         $username = $post_user["username"];
+        $uid = $post_user["id"];
 
         echo "<div class='post $type' id='$id'>";
-        echo "<p class='post_user'>$username</p><p class='text'>$text</p>";
+        $handler->createVoteContainerHTML($id);
+        echo "<p class='post_user'><a href='user.php?id=$uid'>$username</a></p><p class='text'>$text</p>";
         switch ($type) {
             case "answer":
                 createSubmitForm($id, "Comment", true);
@@ -94,6 +95,13 @@ session_start();
         $question_id = (int)$_GET["id"];
         $q_arr = $handler->fetchPostById($question_id);
 
+        if (isset($_POST["vote_id"])) {
+            if ($_SESSION["loggedin"] === true) {
+                $vote_id = $_POST["vote_id"];
+                $handler->toggleVoteOn($vote_id, $_SESSION["id"]);
+                header("location: question.php?id=$question_id#$vote_id");
+            }
+        }
 
         if (isset($_POST["text"]) && isset($_POST["parent_id"])) {
             $text = $_POST["text"];
@@ -129,12 +137,15 @@ session_start();
             echo "<div class='question_header'>";
             echo "<h3><a href='topic.php?id=$topic_id'>$name</a></h3>";
             echo "<div class='question_title' id='$question_id'>";
-            echo "<h1>$text</h1>";
+            echo "<h1>$text";
+            $handler->createVoteContainerHTML($question_id);
+            echo "</h1>";
             createSubmitForm($question_id, "Add an answer", true);
             echo "</div>";
             echo "</div>";
 
             $answers = $handler->fetchAnswersToQuestion($question_id);
+            $answers = $handler->sortPostsByVotes($answers);
 
             $len_answers = sizeof($answers);
             $s = $len_answers==1 ? "Answer": "Answers";

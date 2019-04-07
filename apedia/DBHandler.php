@@ -106,6 +106,11 @@ class DBHandler {
         $stmt->bindParam(':user_id', $user_id);
         return $stmt->execute();
     }
+    function deleteVote($post_id, $user_id) {
+        $sql = "DELETE FROM Votes WHERE post_id=$post_id AND user_id=$user_id;";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute();
+    }
 
     // High-level Post functions
 
@@ -114,6 +119,15 @@ class DBHandler {
         $topic_id = $matches[0]["id"];
 
         $this->insertQuestion($text, $topic_id, $post_user_id);
+    }
+
+    function toggleVoteOn($post_id, $user_id) {
+        $check = $this->fetchVotesBySQL("post_id=$post_id AND user_id=$user_id");
+        if (empty($check)) {
+            $this->insertVote($post_id, $user_id);
+        } else {
+            $this->deleteVote($post_id, $user_id);
+        }
     }
 
     // Low-level Select functions
@@ -185,6 +199,10 @@ class DBHandler {
         return $this->selectVotesBySQL("post_id=$post_id");
     }
 
+    function selectPostsByUser($uid) {
+        return $this->selectBySQL("Posts","post_user=$uid");
+    }
+
     function selectUserByName($username) {
         return $this->selectBySQL("Users","username='$username'");
     }
@@ -224,6 +242,16 @@ class DBHandler {
     }
     function fetchVotesOn($post_id) {
         $result = $this->selectVotesOn($post_id);
+        return iterator_to_array($this->fetchResultArrays($result));
+    }
+
+    function fetchVotesBySQL($sql) {
+        $result = $this->selectVotesBySQL($sql);
+        return iterator_to_array($this->fetchResultArrays($result));
+    }
+
+    function fetchPostsByUser($uid) {
+        $result = $this->selectPostsByUser($uid);
         return iterator_to_array($this->fetchResultArrays($result));
     }
 
@@ -274,6 +302,57 @@ class DBHandler {
         return $final;
     }
 
+    function countUserScore($uid) {
+        $score = 0;
+        $posts = $this->fetchPostsByUser($uid);
+        foreach ($posts as $post) {
+            $votes = $this->fetchVotesOn($post["id"]);
+            $score += sizeof($votes);
+        }
+        return $score;
+    }
+
+    function sortPostsByVotes($array_of_posts) {
+        $scores = [];
+        foreach ($array_of_posts as $val=>$post) {
+            $votes = $this->fetchVotesOn($post["id"]);
+            $scores[$val] = -sizeof($votes);
+        }
+        array_multisort($scores,$array_of_posts);
+        return $array_of_posts;
+    }
+
+
+    // High-level HTML functions
+
+    function createVoteContainerHTML($post_id) {
+        global $handler;
+        $votes = $handler->fetchVotesOn($post_id);
+        $num_votes = sizeof($votes);
+        if ($_SESSION["loggedin"] === true) {
+            $already_voted = false;
+            foreach ($votes as $v_arr) {
+                if ($v_arr["user_id"] == $_SESSION["id"]) {
+                    $already_voted = true;
+                    break;
+                }
+            }
+            if ($already_voted) {
+                echo "<div class='vote_container already'>";
+            } else {
+                echo "<div class='vote_container'>";
+            }
+            echo "<form method='post'>
+    <label>$num_votes</label>
+    <input type='hidden' name='vote_id' value='$post_id'>
+    <input type='submit' value='&#9650;'>
+</form>";
+            echo "</div>";
+        } else {
+            echo "<div class='vote_container no_login'>$num_votes <span>&#9650;</span></p></div>";
+        }
+
+    }
 
 
     function close() {
