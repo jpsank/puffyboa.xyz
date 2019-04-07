@@ -220,7 +220,7 @@ function drawCanvasBasedOn(arr) {
 	for (let r=0; r<arr.length; r++) {
 		for (let c=0; c<arr[r].length; c++) {
 			if (arr[r][c] === 0) {
-				ctx.strokeStyle = "lightgrey";
+				ctx.strokeStyle = "#f5f5f5";
 				ctx.beginPath();
 				ctx.rect(c*tileSizeX,r*tileSizeY,tileSizeX,tileSizeY);
 				ctx.stroke();
@@ -251,8 +251,12 @@ function loop() {
 function setup() { // set up initial pattern
 	//const o = Math.round(rows/2);
 	//game.toggle([[o,o],[o+1,o],[o-1,o],[o+1,o+1],[o,o-1]]);
-	const keys = Object.keys(PRESETS);
-	const choice = PRESETS[keys[Math.floor(Math.random() * keys.length)]];
+
+	// const keys = Object.keys(PRESETS);
+	// const choice = PRESETS[keys[Math.floor(Math.random() * keys.length)]];
+	// game.preset(choice, [Math.floor(rows/2-choice.length/2), Math.floor(cols/2-choice[0].length/2)])
+
+	let choice = PRESETS["gosper_glider_gun"];
 	game.preset(choice, [Math.floor(rows/2-choice.length/2), Math.floor(cols/2-choice[0].length/2)])
 }
 
