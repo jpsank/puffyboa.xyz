@@ -64,7 +64,7 @@ session_start();
         $uid = $post_user["id"];
 
         echo "<div class='post $type' id='$id'>";
-        $handler->createVoteContainerHTML($id);
+        $handler->createVoteContainerHTML($post_arr);
         echo "<p class='post_user'><a href='user.php?id=$uid'>$username</a></p><p class='text'>$text</p>";
         switch ($type) {
             case "answer":
@@ -81,6 +81,7 @@ session_start();
         displayPost($post_arr);
         $id = $post_arr["id"];
         $children = $handler->fetchCommentsUnder($id);
+        $children = $handler->sortPostsByVotes($children);
         if (!empty($children)) {
             echo "<ul>";
             foreach ($children as $c) {
@@ -138,7 +139,7 @@ session_start();
             echo "<h3><a href='topic.php?id=$topic_id'>$name</a></h3>";
             echo "<div class='question_title' id='$question_id'>";
             echo "<h1>$text";
-            $handler->createVoteContainerHTML($question_id);
+            $handler->createVoteContainerHTML($q_arr);
             echo "</h1>";
             createSubmitForm($question_id, "Add an answer", true);
             echo "</div>";

@@ -87,7 +87,7 @@ session_start();
                 $post_user = $handler->fetchUserById($uid);
                 $username = $post_user["username"];
                 echo "<div class='question' id='$qid'>";
-                $handler->createVoteContainerHTML($qid);
+                $handler->createVoteContainerHTML($q_arr);
                 echo "<p class='text'><a href='question.php?id=$qid'>$text</a></p>
 <p class='post_user'><a href='user.php?id=$uid'>$username</a></p>";
                 echo "</div>";

@@ -312,10 +312,13 @@ class DBHandler {
         return $score;
     }
 
-    function sortPostsByVotes($array_of_posts) {
+    function sortPostsByVotes($array_of_posts, $record_votes=true) {
         $scores = [];
         foreach ($array_of_posts as $val=>$post) {
             $votes = $this->fetchVotesOn($post["id"]);
+            if ($record_votes) {
+                $array_of_posts[$val]["votes"] = $votes;
+            }
             $scores[$val] = -sizeof($votes);
         }
         array_multisort($scores,$array_of_posts);
@@ -325,9 +328,13 @@ class DBHandler {
 
     // High-level HTML functions
 
-    function createVoteContainerHTML($post_id) {
-        global $handler;
-        $votes = $handler->fetchVotesOn($post_id);
+    function createVoteContainerHTML($post_arr) {
+        $id = $post_arr["id"];
+        if (isset($post_arr["votes"])) {
+            $votes = $post_arr["votes"];
+        } else {
+            $votes = $this->fetchVotesOn($id);
+        }
         $num_votes = sizeof($votes);
         if ($_SESSION["loggedin"] === true) {
             $already_voted = false;
@@ -344,14 +351,13 @@ class DBHandler {
             }
             echo "<form method='post'>
     <label>$num_votes</label>
-    <input type='hidden' name='vote_id' value='$post_id'>
+    <input type='hidden' name='vote_id' value='$id'>
     <input type='submit' value='&#9650;'>
 </form>";
             echo "</div>";
         } else {
             echo "<div class='vote_container no_login'>$num_votes <span>&#9650;</span></p></div>";
         }
-
     }
 
 
