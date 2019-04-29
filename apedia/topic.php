@@ -55,7 +55,7 @@ session_start();
 
             if (isset($_POST["text"])) {
                 $text = $_POST["text"];
-                $handler->insertQuestion($text, $topic_id, 1);
+                $handler->insertQuestion($text, $topic_id, $_SESSION["id"]);
                 header("Refresh:0");
             }
 
