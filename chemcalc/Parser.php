@@ -43,7 +43,7 @@ class Parser {
         }
 
         // If formula not in appendix, try to find closest match
-        if ($APPENDIX[$formula] === null) {
+        if (!array_key_exists($formula, $APPENDIX)) {
             foreach (array_keys($APPENDIX) as $m) {
                 if (startsWith($m, $formula)) {
                     $formula = $m;
@@ -51,7 +51,11 @@ class Parser {
                 }
             }
         }
-        $appendices = $APPENDIX[$formula];
+        if (array_key_exists($formula, $APPENDIX)) {
+            $appendices = $APPENDIX[$formula];
+        } else {
+            $appendices = null;
+        }
 
         // Get appendix properties for phase, if specified
 

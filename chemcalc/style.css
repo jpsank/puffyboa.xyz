@@ -92,3 +92,7 @@ body {
     color: red;
 }
 
+#answer .coefficient {
+    background-color: yellow;
+}
+

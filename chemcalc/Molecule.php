@@ -37,9 +37,13 @@ class Molecule {
     }
     function getFullFormula($html=false, $format=true) {
         $num = ($this->num!=1)? $this->num : "";
-        $formula = $this->getFormula($format);
+        $formula = $this->getFormula($format, $html);
         $phase = $this->getCurrentPhase();
         $phase = ($phase)? " $phase": "";
+
+        if ($html) {
+            $num = "<span class='coefficient'>$num</span>";
+        }
 
         $string = $num . $formula . $phase;
 
@@ -130,7 +134,7 @@ class Molecule {
         $dict = [];
         foreach($this->constituents as $constituent) {
             foreach ($constituent->countParticles() as $sym=>$num) {
-                if (!$dict[$sym]) {
+                if (!array_key_exists($sym, $dict)) {
                     $dict[$sym] = 0;
                 }
                 $dict[$sym] += $num * $molNum;

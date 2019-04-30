@@ -56,7 +56,7 @@ class Constituent {
         $dict = [];
         foreach($this->particles as $particle) {
             foreach ($particle->countParticles() as $sym=>$num) {
-                if (!$dict[$sym]) {
+                if (!array_key_exists($sym, $dict)) {
                     $dict[$sym] = 0;
                 }
                 $dict[$sym] += $num * $this->num;
