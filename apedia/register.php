@@ -13,7 +13,7 @@ if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
 }
 
 if (!empty($_POST["username"]) && !empty($_POST["password"]) && !empty($_POST["password_confirm"])) {
-    $username = trim($_POST["username"]);
+    $username = htmlspecialchars(trim($_POST["username"]));
     $password = trim($_POST["password"]);
     $password_confirm = trim($_POST["password_confirm"]);
 

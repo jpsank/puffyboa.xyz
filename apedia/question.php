@@ -105,7 +105,7 @@ session_start();
         }
 
         if (isset($_POST["text"]) && isset($_POST["parent_id"])) {
-            $text = $_POST["text"];
+            $text = htmlspecialchars($_POST["text"]);
             $parent_id = $_POST["parent_id"];
             $parent_arr = $handler->fetchPostById($parent_id);
             switch ($parent_arr["type"]) {
