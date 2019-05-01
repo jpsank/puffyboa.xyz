@@ -49,7 +49,7 @@ if (!empty($_POST["username"]) && !empty($_POST["password"]) && !empty($_POST["p
     <title>APedia - puffyboa.xyz</title>
 </head>
 
-<body id="index">
+<body>
 
 <div class="left title">
     <a href="index.php">

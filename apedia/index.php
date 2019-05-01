@@ -18,7 +18,7 @@ session_start();
     <title>APedia - puffyboa.xyz</title>
 </head>
 
-<body id="index">
+<body>
 
 <ul class="nav">
     <?php

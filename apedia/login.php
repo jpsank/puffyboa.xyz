@@ -42,7 +42,7 @@ if (!empty($_POST["username"]) && !empty($_POST["password"])) {
     <title>APedia - puffyboa.xyz</title>
 </head>
 
-<body id="index">
+<body>
 
 <div class="left title">
     <a href="index.php">

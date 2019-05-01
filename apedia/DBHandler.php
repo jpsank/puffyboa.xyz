@@ -1,9 +1,5 @@
 <?php
 
-function generateToken($length = 20) {
-    return bin2hex(random_bytes($length));
-}
-
 class DBHandler {
     private $db;
 
