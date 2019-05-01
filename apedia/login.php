@@ -13,7 +13,7 @@ if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
 }
 
 if (!empty($_POST["username"]) && !empty($_POST["password"])) {
-    $username = trim($_POST["username"]);
+    $username = htmlspecialchars(trim($_POST["username"]));
     $password = trim($_POST["password"]);
     $user_arr = $handler->fetchUserByName($username);
     if (empty($user_arr)) {
@@ -24,7 +24,7 @@ if (!empty($_POST["username"]) && !empty($_POST["password"])) {
             session_start();
             $_SESSION["loggedin"] = true;
             $_SESSION["id"] = $user_arr["id"];
-            $_SESSION["username"] = $user_arr["username"];
+            $_SESSION["username"] = htmlspecialchars($user_arr["username"]);
 
             header("location: index.php");
         } else {
@@ -53,7 +53,7 @@ if (!empty($_POST["username"]) && !empty($_POST["password"])) {
 <div id="main">
     <h1>Login</h1>
     <p>Please fill in your credentials to log in</p>
-    <p class="err_message"><?php echo $err_message; ?></p>
+    <p class="err_message"><?php echo isset($err_message) ? $err_message : ""; ?></p>
     <form id='login' method='post'>
         <label for="username">Username</label>
         <input type='text' name='username' id="username" required>

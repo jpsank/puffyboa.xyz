@@ -22,7 +22,7 @@ session_start();
 
 <ul class="nav">
     <?php
-    if ($_SESSION["loggedin"] === true) {
+    if (isset($_SESSION["loggedin"]) && $_SESSION(["loggedin"]) === true) {
         $username = $_SESSION["username"];
         $id = $_SESSION["id"];
         echo "<li>Logged in as <a href='user.php?id=$id'>$username</a>. <a href='logout.php'>Log out</a></li>";
@@ -41,7 +41,7 @@ session_start();
 
 <form id="search" method="get">
     <input type="text" name="search" placeholder="Search questions"
-           value="<?php echo isset($_GET["search"]) ? $_GET['search'] : ""; ?>">
+           value="<?php echo isset($_GET["search"]) ? htmlspecialchars($_GET['search']) : ""; ?>">
     <input type="submit" value="Search">
 </form>
 
@@ -92,7 +92,7 @@ session_start();
 
     if (isset($_GET["search"])) {
         echo "<div class='search_results'>";
-        $search = $_GET["search"];
+        $search = htmlspecialchars($_GET["search"]);
         $results = $handler->searchPosts($search);
         if (empty($results)) {
             echo "<p>No results found.</p>";
