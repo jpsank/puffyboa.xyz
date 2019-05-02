@@ -36,12 +36,17 @@ foreach($folders as $folder) {
 <html lang="en">
 
 <head>
+    <link rel="stylesheet" type="text/css" href="../assets/css/shared.css">
     <link rel="stylesheet" type="text/css" href="style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Speedreed - puffyboa.xyz</title>
 </head>
 
 <body>
+
+    <div class="back-to-home">
+        <a href="../index.html">Home</a>
+    </div>
 
     <div class="jumbo">
         <h1>Speedreed</h1>

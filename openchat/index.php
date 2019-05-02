@@ -180,12 +180,17 @@ if (isset($_POST['text'])) {
 
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="../assets/css/shared.css">
 	<link rel="stylesheet" type="text/css" href="style.css">
 	<title>OpenChat - puffyboa.xyz</title>
 	<link rel="shortcut icon" href="../assets/img/favicon.png" />
 </head>
 
 <body>
+
+    <div class="back-to-home">
+        <a href="../index.html">Home</a>
+    </div>
 
 	<section id="jumbo">
 		<h1>OpenChat</h1>

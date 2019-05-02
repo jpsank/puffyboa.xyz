@@ -13,12 +13,17 @@ session_start();
 
 <html lang="en">
 <head>
+    <link rel="stylesheet" type="text/css" href="../assets/css/shared.css">
     <link rel="stylesheet" type="text/css" href="style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>APedia - puffyboa.xyz</title>
 </head>
 
 <body>
+
+<div class="back-to-home">
+    <a href="../index.html">Home</a>
+</div>
 
 <ul class="nav">
     <?php

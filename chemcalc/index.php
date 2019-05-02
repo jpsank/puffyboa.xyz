@@ -47,6 +47,7 @@ function prettyPrint($dict) {
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="../assets/css/shared.css">
     <link rel="stylesheet" type="text/css" href="../chemcalc/style.css">
     <title>ChemCalc - puffyboa.xyz</title>
     <link rel="shortcut icon" href="../assets/img/favicon.png" />
@@ -54,29 +55,33 @@ function prettyPrint($dict) {
 
 <body>
 
+<div class="back-to-home">
+    <a href="../index.html">Home</a>
+</div>
+
 <section id="jumbo">
     <h1>ChemCalc</h1>
     <p>Calculate the properties for all your chemical equations and molecules</p>
     <p>i.e.
-    <?php
-    $examples = ["NaOH + HCl = NaCl + H2O","H2O","3Fe2O3 + CO = CO2 + 2Fe3O4","CH3OH", "H2O (g) = H2O (l)"];
+        <?php
+        $examples = ["NaOH + HCl = NaCl + H2O","H2O","3Fe2O3 + CO = CO2 + 2Fe3O4","CH3OH", "H2O (g) = H2O (l)"];
 
-    if (isset($_GET['input'])) {
-        $input = $_GET['input'];
-    } else {
-        $input = null;
-    }
-    $output = [];
-    foreach ($examples as $example) {
-        $encoded = urlencode($example);
-        if ($input == $example) {
-            array_push($output,"<a class='selected' href='?input=$encoded'>$example</a>");
+        if (isset($_GET['input'])) {
+            $input = $_GET['input'];
         } else {
-            array_push($output,"<a href='?input=$encoded'>$example</a>");
+            $input = null;
         }
-    }
-    echo join(", ",$output);
-    ?>
+        $output = [];
+        foreach ($examples as $example) {
+            $encoded = urlencode($example);
+            if ($input == $example) {
+                array_push($output,"<a class='selected' href='?input=$encoded'>$example</a>");
+            } else {
+                array_push($output,"<a href='?input=$encoded'>$example</a>");
+            }
+        }
+        echo join(", ",$output);
+        ?>
     </p>
 </section>
 
