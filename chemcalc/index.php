@@ -61,6 +61,7 @@ function prettyPrint($dict) {
 
 <section id="jumbo">
     <h1>ChemCalc</h1>
+    <a href="table.html">See Periodic Table</a>
     <p>Calculate the properties for all your chemical equations and molecules</p>
     <p>i.e.
         <?php

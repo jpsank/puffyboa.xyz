@@ -1,0 +1,111 @@
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="../assets/css/shared.css">
+    <link rel="stylesheet" type="text/css" href="../chemcalc/style.css">
+    <title>ChemCalc - puffyboa.xyz</title>
+    <link rel="shortcut icon" href="../assets/img/favicon.png" />
+</head>
+
+<body>
+
+<div class="back-to-home">
+    <a href="../index.html">Home</a>
+</div>
+
+<section id="jumbo">
+    <h1><a href="index.php">ChemCalc</a></h1>
+    <p>Interactive Periodic Table</p>
+</section>
+
+<section id="main">
+
+    <div id="trend-selector">
+        <label>Select a trend:</label>
+        <select>
+            <option>None</option>
+            <option value="atomic_mass">Atomic Mass (amu)</option>
+            <option value="boil">Boiling Point (K)</option>
+            <option value="density">Density (g/cm3)</option>
+            <option value="melt">Melting Point (K)</option>
+            <option value="molar_heat">Molar Heat (J/mol K)</option>
+        </select>
+    </div>
+
+    <table id="periodic-table">
+
+    </table>
+
+</section>
+
+</body>
+
+<script type="module">
+    import { ELEMENTS } from "./elements.js";
+
+    let matrix = [];
+    for (let sym in ELEMENTS) {
+        let element = ELEMENTS[sym];
+        let xpos = element["xpos"];
+        let ypos = element["ypos"];
+        if (matrix[ypos-1] == null) {
+            matrix[ypos-1] = [];
+        }
+        matrix[ypos-1][xpos-1] = element;
+    }
+
+
+    function buildTableHTML(trend_key=null) {
+        let max_trend = null;
+        if (trend_key) {
+            for (let period of matrix) {
+                for (let element of period) {
+                    if (element) {
+                        let val = element[trend_key];
+                        if (val !== null && max_trend === null || val > max_trend) {
+                            max_trend = val;
+                        }
+                    }
+                }
+            }
+        }
+        let html = "";
+        for (let period of matrix) {
+            for (let element of period) {
+                if (element) {
+                    let symbol = element["symbol"];
+                    if (trend_key && element[trend_key] != null) {
+                        let val = element[trend_key];
+                        let r = 255 * val/max_trend;
+                        let style = `style="background-color: rgba(255,${255-r},${255-r})"`;
+                        html += `<td class='element' ${style}><a href='index.php?input=${symbol}'>${symbol}<br>${val}</a></td>`;
+                    } else {
+                        html += `<td class='element'><a href='index.php?input=${symbol}'>${symbol}</a></td>`;
+                    }
+                } else {
+                    html += "<td></td>";
+                }
+            }
+            html += "</tr>";
+        }
+        table.innerHTML = html;
+    }
+
+    function updateTable() {
+        let trend = select.options[select.selectedIndex].value;
+        buildTableHTML(trend);
+    }
+
+    const table = document.getElementById("periodic-table");
+    const select = document.querySelector("#trend-selector select");
+
+    select.addEventListener('change', updateTable, false);
+
+    buildTableHTML();
+
+</script>
+
+</html>
+
