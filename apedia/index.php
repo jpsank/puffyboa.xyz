@@ -27,7 +27,7 @@ session_start();
 
 <ul class="nav">
     <?php
-    if (isset($_SESSION["loggedin"]) && $_SESSION(["loggedin"]) === true) {
+    if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
         $username = $_SESSION["username"];
         $id = $_SESSION["id"];
         echo "<li>Logged in as <a href='user.php?id=$id'>$username</a>. <a href='logout.php'>Log out</a></li>";
