@@ -143,4 +143,11 @@ class Molecule {
         return $dict;
     }
 
+    function isSingleElement() {
+        if (count($this->constituents) == 1) {
+            return $this->constituents[0]->isSingleElement();
+        }
+        return false;
+    }
+
 }

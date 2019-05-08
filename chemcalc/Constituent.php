@@ -65,4 +65,14 @@ class Constituent {
         return $dict;
     }
 
+    function isSingleElement() {
+        if ($this->num == 1 && count($this->particles) == 1) {
+            $p1 = $this->particles[0];
+            if ($p1 instanceof Atom && $p1->num == 1) {
+                return $p1->elem;
+            }
+        }
+        return false;
+    }
+
 }

@@ -59,20 +59,37 @@ body {
     font-family: monospace;
     font-size: 1em;
 }
-#answer table {
+#answer table.props {
     font-size: 1em;
     width: 100%;
     border-spacing: 10px;
 }
-#answer tr {
+#answer table.props tr {
 }
-#answer tr td {
+#answer table.props tr td {
     padding: 5px;
 }
-#answer tr td.key  {
+#answer table.props tr td.key  {
     width: 20%;
 }
-#answer tr td.val  {
+#answer table.props tr td.val  {
+    background-color: #f4f4f4;
+}
+#answer table.atomic_props {
+    font-size: 1em;
+    width: 100%;
+    border-spacing: 10px;
+}
+#answer table.atomic_props tr {
+}
+#answer table.atomic_props tr td {
+    padding: 5px;
+    word-break: break-word;
+}
+#answer table.atomic_props tr td.key  {
+    width: 20%;
+}
+#answer table.atomic_props tr td.val  {
     background-color: #f4f4f4;
 }
 
@@ -124,6 +141,13 @@ table#periodic-table td {
 
 table#periodic-table td.element {
     border: 1px solid grey;
+}
+table#periodic-table td span {
+    font-size: .8em;
+    display: block;
+}
+table#periodic-table td span.trend {
+    background-color: yellow;
 }
 
 table#periodic-table td a {

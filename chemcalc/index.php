@@ -21,10 +21,10 @@ function readJSON($file) {
 $ELEMENTS = readJSON("elements.json");
 $APPENDIX = readJSON("appendix.json");
 
-require("Parser.php");
-require("Constituent.php");
-require("Molecule.php");
-require("Equation.php");
+require_once "Parser.php";
+require_once "Constituent.php";
+require_once "Molecule.php";
+require_once "Equation.php";
 
 
 function html_entity_strlen($html) {
@@ -100,7 +100,6 @@ function prettyPrint($dict) {
     </form>
 
     <div id="answer">
-        <table>
         <?php
 
         // Did the user submit input
@@ -136,7 +135,9 @@ function prettyPrint($dict) {
                         $dict["Behavior"] = $equation->getBehavior();
                         $dict["Favorable at 25 Celsius"] = $equation->isFavorableAt(298.15)? "Yes": "No";
                     }
+                    echo "<table class='props'>";
                     prettyPrint($dict);
+                    echo "</table>";
                 } else {
                     $molecule = $parser->parseMolecule($input);
                     $dict = [];
@@ -148,14 +149,44 @@ function prettyPrint($dict) {
                         $dict["&Delta;S&deg;<sub>f</sub>"] = $molecule->getEntropy() . " J/molK";
                         $dict["&Delta;G&deg;<sub>f</sub>"] = $molecule->getGibbs() . " kJ/mol";
                     }
+                    echo "<table class='props'>";
                     echo "<tr><td>" . $molecule->getFullFormula() . "</td></tr>";
                     prettyPrint($dict);
+                    echo "</table>";
+
+                    $elem = $molecule->isSingleElement();
+                    if ($elem !== false) {
+                        $dict2 = [];
+                        $dict2["Appearance"] = $elem["appearance"];
+                        $dict2["Molar Mass"] = $elem["atomic_mass"]? $elem["atomic_mass"] . " g/mol" : "";
+                        $dict2["Boiling point"] = $elem["boil"]? $elem["boil"] . " K" : "";
+                        $dict2["Category"] = $elem["category"];
+                        $dict2["Color"] = $elem["color"];
+                        $dict2["Density"] = $elem["density"]? $elem["density"] . " g/cm3" : "";
+                        $dict2["Discovered by"] = $elem["discovered_by"];
+                        $dict2["Melting point"] = $elem["melt"] ? $elem["melt"] . " K" : "";
+                        $dict2["Molar heat"] = $elem["molar_heat"]? $elem["molar_heat"] . " J/molK" : "";
+                        $dict2["Named by"] = $elem["named_by"];
+                        $dict2["Atomic Number"] = $elem["number"];
+                        $dict2["Phase"] = $elem["phase"];
+                        $dict2["Source"] = $elem["source"];
+                        $dict2["Spectral img"] = $elem["spectral_img"];
+                        $dict2["Shells"] = json_encode($elem["shells"]);
+
+                        $name = $elem["name"];
+                        $summary = $elem["summary"];
+
+                        echo "<table class='atomic_props'>";
+                        echo "<h2>Atomic Properties of $name</h2>";
+                        echo "<p>$summary</p>";
+                        prettyPrint($dict2);
+                        echo "</table>";
+                    }
                 }
             }
         }
 
         ?>
-        </table>
     </div>
 
 </section>

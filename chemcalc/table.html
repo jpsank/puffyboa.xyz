@@ -26,7 +26,6 @@
         <label>Select a trend:</label>
         <select>
             <option>None</option>
-            <option value="atomic_mass">Atomic Mass (amu)</option>
             <option value="boil">Boiling Point (K)</option>
             <option value="density">Density (g/cm3)</option>
             <option value="melt">Melting Point (K)</option>
@@ -76,13 +75,15 @@
             for (let element of period) {
                 if (element) {
                     let symbol = element["symbol"];
+                    let number = element["number"];
+                    let mass = Math.round(element["atomic_mass"]*1000)/1000;
                     if (trend_key && element[trend_key] != null) {
                         let val = element[trend_key];
                         let r = 255 * val/max_trend;
                         let style = `style="background-color: rgba(255,${255-r},${255-r})"`;
-                        html += `<td class='element' ${style}><a href='index.php?input=${symbol}'>${symbol}<br>${val}</a></td>`;
+                        html += `<td class='element' ${style}><a href='index.php?input=${symbol}'><span>${number}</span>${symbol}<span>${mass}</span><span class="trend">${val}</span></a></td>`;
                     } else {
-                        html += `<td class='element'><a href='index.php?input=${symbol}'>${symbol}</a></td>`;
+                        html += `<td class='element'><a href='index.php?input=${symbol}'><span>${number}</span>${symbol}<span>${mass}</span></a></td>`;
                     }
                 } else {
                     html += "<td></td>";
