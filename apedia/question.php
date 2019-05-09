@@ -9,6 +9,51 @@ $handler->init();
 
 session_start();
 
+if ($_GET["id"] == "") {
+} else {
+    $question_id = (int)$_GET["id"];
+    $question = $handler->fetchPostById($question_id);
+
+    if (isset($_POST["vote_id"])) {
+        if ($_SESSION["loggedin"] === true) {
+            $vote_id = $_POST["vote_id"];
+            $handler->toggleVoteOn($vote_id, $_SESSION["id"]);
+            header("location: question.php?id=$question_id#$vote_id");
+        }
+    }
+
+    if (isset($_POST["text"]) && isset($_POST["parent_id"])) {
+        $text = htmlspecialchars($_POST["text"]);
+        $parent_id = $_POST["parent_id"];
+        $parent_arr = $handler->fetchPostById($parent_id);
+        switch ($parent_arr["type"]) {
+            case "question":
+                $handler->insertAnswer($text, $parent_id, $_SESSION["id"]);
+                $last_id = $handler->lastInsertRowID();
+                header("Refresh:0; url=question.php?id=$question_id#$last_id");
+                break;
+            case "answer":
+                $handler->insertComment($text, $parent_id, $_SESSION["id"]);
+                $last_id = $handler->lastInsertRowID();
+                header("Refresh:0; url=question.php?id=$question_id#$last_id");
+                break;
+            case "comment":
+                $handler->insertComment($text, $parent_id, $_SESSION["id"]);
+                $last_id = $handler->lastInsertRowID();
+                header("Refresh:0; url=question.php?id=$question_id#$last_id");
+                break;
+        }
+    }
+
+    if ($question) {
+        $question_text = $question["text"];
+
+        $parent_topic = $handler->fetchTopicById($question["parent"]);
+        $topic_id = $parent_topic["id"];
+        $topic_name = $parent_topic["name"];
+    }
+}
+
 ?>
 
 <html lang="en">
@@ -22,7 +67,10 @@ session_start();
 <body>
 
 <div class="back-to-home">
-    <a href="../index.html">Home</a>
+    <a href="../index.html">puffyboa.xyz</a>
+    <a href="index.php">APedia</a>
+    <a href="topic.php?id=<?php echo $topic_id; ?>"><?php echo $topic_name; ?></a>
+    <a href=""><?php echo constrainString($question_text); ?></a>
 </div>
 
 <ul class="nav">
@@ -44,6 +92,13 @@ session_start();
 
 <div id="main">
     <?php
+
+    function constrainString($str) {
+        if (strlen($str) > 100) {
+            return substr($str, 0, 100) . "...";
+        }
+        return $str;
+    }
 
     function createSubmitForm($id, $text, $block) {
         $block = $block ? "block": "";
@@ -96,77 +151,33 @@ session_start();
         }
     }
 
-    if ($_GET["id"] == "") {
+
+    if ($question) {
+        echo "<div class='question_header'>";
+        echo "<h3><a href='topic.php?id=$topic_id'>$topic_name</a></h3>";
+        echo "<div class='question_title' id='$question_id'>";
+        echo "<h1>$question_text";
+        $handler->createVoteContainerHTML($question);
+        echo "</h1>";
+        createSubmitForm($question_id, "Add an answer", true);
+        echo "</div>";
+        echo "</div>";
+
+        $answers = $handler->fetchAnswersToQuestion($question_id);
+        $answers = $handler->sortPostsByVotes($answers);
+
+        $len_answers = sizeof($answers);
+        $s = $len_answers==1 ? "Answer": "Answers";
+        echo "<h3 class='num_answers'>$len_answers $s</h3>";
+
+        echo "<div class='answers_container'>";
+
+        foreach ($answers as $answer) {
+            unloadComments($answer);
+        }
+        echo "</div>";
     } else {
-        $question_id = (int)$_GET["id"];
-        $q_arr = $handler->fetchPostById($question_id);
-
-        if (isset($_POST["vote_id"])) {
-            if ($_SESSION["loggedin"] === true) {
-                $vote_id = $_POST["vote_id"];
-                $handler->toggleVoteOn($vote_id, $_SESSION["id"]);
-                header("location: question.php?id=$question_id#$vote_id");
-            }
-        }
-
-        if (isset($_POST["text"]) && isset($_POST["parent_id"])) {
-            $text = htmlspecialchars($_POST["text"]);
-            $parent_id = $_POST["parent_id"];
-            $parent_arr = $handler->fetchPostById($parent_id);
-            switch ($parent_arr["type"]) {
-                case "question":
-                    $handler->insertAnswer($text, $parent_id, $_SESSION["id"]);
-                    $last_id = $handler->lastInsertRowID();
-                    header("Refresh:0; url=question.php?id=$question_id#$last_id");
-                    break;
-                case "answer":
-                    $handler->insertComment($text, $parent_id, $_SESSION["id"]);
-                    $last_id = $handler->lastInsertRowID();
-                    header("Refresh:0; url=question.php?id=$question_id#$last_id");
-                    break;
-                case "comment":
-                    $handler->insertComment($text, $parent_id, $_SESSION["id"]);
-                    $last_id = $handler->lastInsertRowID();
-                    header("Refresh:0; url=question.php?id=$question_id#$last_id");
-                    break;
-            }
-        }
-
-
-        if ($q_arr) {
-            $text = $q_arr["text"];
-
-            $t_arr = $handler->fetchTopicById($q_arr["parent"]);
-            $topic_id = $t_arr["id"];
-            $name = $t_arr["name"];
-
-            echo "<div class='question_header'>";
-            echo "<h3><a href='topic.php?id=$topic_id'>$name</a></h3>";
-            echo "<div class='question_title' id='$question_id'>";
-            echo "<h1>$text";
-            $handler->createVoteContainerHTML($q_arr);
-            echo "</h1>";
-            createSubmitForm($question_id, "Add an answer", true);
-            echo "</div>";
-            echo "</div>";
-
-            $answers = $handler->fetchAnswersToQuestion($question_id);
-            $answers = $handler->sortPostsByVotes($answers);
-
-            $len_answers = sizeof($answers);
-            $s = $len_answers==1 ? "Answer": "Answers";
-            echo "<h3 class='num_answers'>$len_answers $s</h3>";
-
-            echo "<div class='answers_container'>";
-
-            foreach ($answers as $answer) {
-                unloadComments($answer);
-            }
-            echo "</div>";
-        } else {
-            echo "Topic not found.";
-        }
-
+        echo "Topic not found.";
     }
 
     ?>

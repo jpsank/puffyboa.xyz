@@ -189,7 +189,8 @@ if (isset($_POST['text'])) {
 <body>
 
     <div class="back-to-home">
-        <a href="../index.html">Home</a>
+        <a href="../index.html">puffyboa.xyz</a>
+        <a href="index.php">OpenChat</a>
     </div>
 
 	<section id="jumbo">

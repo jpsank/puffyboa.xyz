@@ -22,7 +22,7 @@ foreach($folders as $folder) {
         $files = scandir($folderPath);
         foreach($files as $file) {
             if (substr($file, -4) === ".txt") {
-                if (!$TEXTS[$folder]) {
+                if (!key_exists($folder,$TEXTS)) {
                     $TEXTS[$folder] = [];
                 }
                 array_push($TEXTS[$folder], $file);
@@ -45,7 +45,8 @@ foreach($folders as $folder) {
 <body>
 
     <div class="back-to-home">
-        <a href="../index.html">Home</a>
+        <a href="../index.html">puffyboa.xyz</a>
+        <a href="index.php">Speedreed</a>
     </div>
 
     <div class="jumbo">
@@ -55,7 +56,7 @@ foreach($folders as $folder) {
     <div id="main">
     <?php
 
-    if ($_GET["file"] == "") {
+    if (!isset($_GET["file"]) || $_GET["file"] == "") {
 
         echo "<div id='library'>";
         foreach($TEXTS as $folder=>$files) {

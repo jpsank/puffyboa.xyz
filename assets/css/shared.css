@@ -1,16 +1,23 @@
 .back-to-home {
     text-align: left;
     margin: 5px 10px;
+    padding: 2px;
     background-color: rgba(0,0,0,.03);
     /*background-color: #f6f6f6;*/
 }
 .back-to-home a {
-    padding-left: 20px;
+    padding-left: 10px;
     font-family: serif;
-    font-size: large;
+    font-size: medium;
     text-decoration: none;
     color: black;
 }
 .back-to-home a:hover {
     text-decoration: underline;
+}
+.back-to-home a:not(:first-child)::before {
+    content: "/";
+    font-size: .8em;
+    display: inline-block;
+    padding-right: 10px;
 }

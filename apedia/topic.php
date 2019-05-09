@@ -9,6 +9,12 @@ $handler->init();
 
 session_start();
 
+if ($_GET["id"] == "") {
+} else {
+    $topic_id = (int)$_GET["id"];
+    $topic = $handler->fetchTopicById($topic_id);
+}
+
 ?>
 
 <html lang="en">
@@ -22,12 +28,14 @@ session_start();
 <body>
 
 <div class="back-to-home">
-    <a href="../index.html">Home</a>
+    <a href="../index.html">puffyboa.xyz</a>
+    <a href="index.php">APedia</a>
+    <a href=""><?php echo $topic["name"]; ?></a>
 </div>
 
 <ul class="nav">
     <?php
-    if ($_SESSION["loggedin"] === true) {
+    if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
         $username = $_SESSION["username"];
         $id = $_SESSION["id"];
         echo "<li>Logged in as <a href='user.php?id=$id'>$username</a>. <a href='logout.php'>Log out</a></li>";
@@ -44,64 +52,58 @@ session_start();
 <div id="main">
     <?php
 
-    if ($_GET["id"] == "") {
-    } else {
-        $topic_id = (int)$_GET["id"];
-        $arr = $handler->fetchTopicById($topic_id);
-        if ($arr) {
+    if ($topic) {
 
-            if (isset($_POST["vote_id"])) {
-                if ($_SESSION["loggedin"] === true) {
-                    $vote_id = $_POST["vote_id"];
-                    $handler->toggleVoteOn($vote_id, $_SESSION["id"]);
-                    header("location: topic.php?id=$topic_id#$vote_id");
-                }
+        if (isset($_POST["vote_id"])) {
+            if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
+                $vote_id = $_POST["vote_id"];
+                $handler->toggleVoteOn($vote_id, $_SESSION["id"]);
+                header("location: topic.php?id=$topic_id#$vote_id");
             }
+        }
 
-            if (isset($_POST["text"])) {
-                $text = htmlspecialchars($_POST["text"]);
-                $handler->insertQuestion($text, $topic_id, $_SESSION["id"]);
-                header("Refresh:0");
-            }
+        if (isset($_POST["text"])) {
+            $text = htmlspecialchars($_POST["text"]);
+            $handler->insertQuestion($text, $topic_id, $_SESSION["id"]);
+            header("Refresh:0");
+        }
 
-            $name = $arr["name"];
-            echo "<h1>$name</h1>";
+        $name = $topic["name"];
+        echo "<h1>$name</h1>";
 
-            echo "<div class='topic' id='$topic_id'>";
-            if ($_SESSION["loggedin"] === true) {
-                echo "<form onfocusout='focusOut(this)' onfocusin='focusIn(this)' class='submit block' method='post'>
+        echo "<div class='topic' id='$topic_id'>";
+        if ($_SESSION["loggedin"] === true) {
+            echo "<form onfocusout='focusOut(this)' onfocusin='focusIn(this)' class='submit block' method='post'>
 <textarea name='text' placeholder='Ask a question' required></textarea>
 <input type='submit'>
 </form>";
-            } else {
-                echo "<p class='login_link'><a href='login.php'>Login to <span>Ask a question</span></a></p>";
-            }
-            echo "</div>";
-
-            $questions = $handler->fetchQuestionsByTopic($topic_id);
-            $questions = $handler->sortPostsByVotes($questions);
-            $len_questions = sizeof($questions);
-            $s = $len_questions == 1 ? "Question" : "Questions";
-            echo "<h3 class='num_questions'>$len_questions $s</h3>";
-
-            echo "<div class='questions_container'>";
-            foreach ($questions as $q_arr) {
-                $qid = $q_arr["id"];
-                $text = $q_arr["text"];
-                $uid = $q_arr["post_user"];
-                $post_user = $handler->fetchUserById($uid);
-                $username = $post_user["username"];
-                echo "<div class='question' id='$qid'>";
-                $handler->createVoteContainerHTML($q_arr);
-                echo "<p class='text'><a href='question.php?id=$qid'>$text</a></p>
-<p class='post_user'><a href='user.php?id=$uid'>$username</a></p>";
-                echo "</div>";
-            }
-            echo "</div>";
         } else {
-            echo "Topic not found.";
+            echo "<p class='login_link'><a href='login.php'>Login to <span>Ask a question</span></a></p>";
         }
+        echo "</div>";
 
+        $questions = $handler->fetchQuestionsByTopic($topic_id);
+        $questions = $handler->sortPostsByVotes($questions);
+        $len_questions = sizeof($questions);
+        $s = $len_questions == 1 ? "Question" : "Questions";
+        echo "<h3 class='num_questions'>$len_questions $s</h3>";
+
+        echo "<div class='questions_container'>";
+        foreach ($questions as $q_arr) {
+            $qid = $q_arr["id"];
+            $text = $q_arr["text"];
+            $uid = $q_arr["post_user"];
+            $post_user = $handler->fetchUserById($uid);
+            $username = $post_user["username"];
+            echo "<div class='question' id='$qid'>";
+            $handler->createVoteContainerHTML($q_arr);
+            echo "<p class='text'><a href='question.php?id=$qid'>$text</a></p>
+<p class='post_user'><a href='user.php?id=$uid'>$username</a></p>";
+            echo "</div>";
+        }
+        echo "</div>";
+    } else {
+        echo "Topic not found.";
     }
 
     ?>

@@ -9,6 +9,12 @@ $handler->init();
 
 session_start();
 
+if ($_GET["id"] == "") {
+} else {
+    $uid = (int)$_GET["id"];
+    $user = $handler->fetchUserById($uid);
+}
+
 ?>
 
 <html lang="en">
@@ -22,7 +28,9 @@ session_start();
 <body>
 
 <div class="back-to-home">
-    <a href="../index.html">Home</a>
+    <a href="../index.html">puffyboa.xyz</a>
+    <a href="index.php">APedia</a>
+    <a href=""><?php echo $user["username"]; ?></a>
 </div>
 
 <ul class="nav">
@@ -62,9 +70,8 @@ session_start();
         $html = "";
         foreach ($parentList as $i=>$parent) {
             $pid = $parent["id"];
-            if ($i == sizeof($parentList)-1) {
-                $class = "final";
-            }
+            $class = ($i == sizeof($parentList)-1)? "final": "";
+
             if ($i == 0) {
                 $name = $parent["name"];
                 $html .= "<a class='topic $class' href='topic.php?id=$pid'>$name</a>";
@@ -84,36 +91,31 @@ session_start();
         echo "<div class='user_post $final_type'>$html</div>";
     }
 
-    if ($_GET["id"] == "") {
-    } else {
-        $uid = (int)$_GET["id"];
-        $u_arr = $handler->fetchUserById($uid);
 
-        if ($u_arr) {
-            $username = $u_arr["username"];
-            $created_at = $u_arr["created_at"];
 
-            echo "<h1>$username</h1>";
-            echo "<p>Joined $created_at</p>";
+    if ($user) {
+        $username = $user["username"];
+        $created_at = $user["created_at"];
 
-            $score = $handler->countUserScore($uid);
-            echo "<p>User score: $score</p>";
+        echo "<h1>$username</h1>";
+        echo "<p>Joined $created_at</p>";
 
-            $posts = $handler->fetchPostsByUser($uid);
+        $score = $handler->countUserScore($uid);
+        echo "<p>User score: $score</p>";
 
-            $len_posts = sizeof($posts);
-            $s = $len_posts==1 ? "Post": "Posts";
-            echo "<h3 class='num_posts'>$len_posts $s</h3>";
+        $posts = $handler->fetchPostsByUser($uid);
 
-            echo "<div class='posts_container'>";
+        $len_posts = sizeof($posts);
+        $s = $len_posts==1 ? "Post": "Posts";
+        echo "<h3 class='num_posts'>$len_posts $s</h3>";
 
-            foreach ($posts as $post) {
-                displayPost($post);
-            }
+        echo "<div class='posts_container'>";
 
-            echo "</div>";
-
+        foreach ($posts as $post) {
+            displayPost($post);
         }
+
+        echo "</div>";
 
     }
 

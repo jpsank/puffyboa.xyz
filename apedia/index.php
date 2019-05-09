@@ -22,7 +22,8 @@ session_start();
 <body>
 
 <div class="back-to-home">
-    <a href="../index.html">Home</a>
+    <a href="../index.html">puffyboa.xyz</a>
+    <a href="index.php">APedia</a>
 </div>
 
 <ul class="nav">

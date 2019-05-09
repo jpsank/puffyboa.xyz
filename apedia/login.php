@@ -46,7 +46,9 @@ if (!empty($_POST["username"]) && !empty($_POST["password"])) {
 <body>
 
 <div class="back-to-home">
-    <a href="../index.html">Home</a>
+    <a href="../index.html">puffyboa.xyz</a>
+    <a href="index.php">APedia</a>
+    <a href="login.php">Login</a>
 </div>
 
 <div class="left title">
