@@ -33,6 +33,10 @@
         </select>
     </div>
 
+    <div id="legend">
+
+    </div>
+
     <table id="periodic-table">
 
     </table>
@@ -47,25 +51,22 @@
     let matrix = [];
     for (let sym in ELEMENTS) {
         let element = ELEMENTS[sym];
-        let xpos = element["xpos"];
-        let ypos = element["ypos"];
-        if (matrix[ypos-1] == null) {
-            matrix[ypos-1] = [];
+        let x = element["xpos"];
+        let y = element["ypos"];
+        if (matrix[y-1] == null) {
+            matrix[y-1] = [];
         }
-        matrix[ypos-1][xpos-1] = element;
+        matrix[y-1][x-1] = element;
     }
 
-
-    function buildTableHTML(trend_key=null) {
+    function buildTableTrendHTML(trend_key) {
         let max_trend = null;
-        if (trend_key) {
-            for (let period of matrix) {
-                for (let element of period) {
-                    if (element) {
-                        let val = element[trend_key];
-                        if (val !== null && max_trend === null || val > max_trend) {
-                            max_trend = val;
-                        }
+        for (let period of matrix) {
+            for (let element of period) {
+                if (element) {
+                    let val = element[trend_key];
+                    if (val !== null && max_trend === null || val > max_trend) {
+                        max_trend = val;
                     }
                 }
             }
@@ -76,14 +77,14 @@
                 if (element) {
                     let symbol = element["symbol"];
                     let number = element["number"];
-                    let mass = Math.round(element["atomic_mass"]*1000)/1000;
-                    if (trend_key && element[trend_key] != null) {
-                        let val = element[trend_key];
-                        let r = 255 * val/max_trend;
+                    let trend_val = element[trend_key];
+
+                    if (trend_val != null) {
+                        let r = 255 * trend_val/max_trend;
                         let style = `style="background-color: rgba(255,${255-r},${255-r})"`;
-                        html += `<td class='element' ${style}><a href='index.php?input=${symbol}'><span>${number}</span>${symbol}<span>${mass}</span><span class="trend">${val}</span></a></td>`;
+                        html += `<td class='element' ${style}><a href='index.php?input=${symbol}'><span>${number}</span>${symbol}<span class="trend">${trend_val}</span></a></td>`;
                     } else {
-                        html += `<td class='element'><a href='index.php?input=${symbol}'><span>${number}</span>${symbol}<span>${mass}</span></a></td>`;
+                        html += `<td class='element'><a href='index.php?input=${symbol}'><span>${number}</span>${symbol}</a></td>`;
                     }
                 } else {
                     html += "<td></td>";
@@ -92,19 +93,60 @@
             html += "</tr>";
         }
         table.innerHTML = html;
+        legend.innerHTML = "";
+    }
+
+    function buildTableDefaultHTML() {
+        let category_set = [];
+
+        let html = "";
+        for (let period of matrix) {
+            for (let element of period) {
+                if (element) {
+                    let symbol = element["symbol"];
+                    let number = element["number"];
+                    let mass = Math.round(element["atomic_mass"]*1000)/1000;
+
+                    let category = element["category"].split(' ').join('_');
+                    if (category.startsWith("unknown")) category = "unknown";
+                    if (!category_set.includes(category)) {
+                        category_set.push(category);
+                    }
+
+                    html += `<td class='element category ${category}'><a href='index.php?input=${symbol}'><span>${number}</span>${symbol}<span>${mass}</span></a></td>`;
+                } else {
+                    html += "<td></td>";
+                }
+            }
+            html += "</tr>";
+        }
+
+        let html2 = "";
+        for (let cat of category_set) {
+            let str = cat.split("_").join(" ");
+            html2 += `<div class="${cat}">${str}</div>`;
+        }
+
+        table.innerHTML = html;
+        legend.innerHTML = html2;
     }
 
     function updateTable() {
         let trend = select.options[select.selectedIndex].value;
-        buildTableHTML(trend);
+        if (trend === "None") {
+            buildTableDefaultHTML();
+        } else {
+            buildTableTrendHTML(trend);
+        }
     }
 
     const table = document.getElementById("periodic-table");
     const select = document.querySelector("#trend-selector select");
+    const legend = document.getElementById("legend");
 
     select.addEventListener('change', updateTable, false);
 
-    buildTableHTML();
+    buildTableDefaultHTML();
 
 </script>
 
