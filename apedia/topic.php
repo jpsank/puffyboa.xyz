@@ -69,14 +69,17 @@ if ($_GET["id"] == "") {
         }
 
         $name = $topic["name"];
-        echo "<h1>$name</h1>";
+        echo "<h1 class='topic_header'>$name</h1>";
 
 
         $questions = $handler->fetchQuestionsByTopic($topic_id);
         $questions = $handler->sortPostsByVotes($questions);
         $len_questions = sizeof($questions);
         $s = $len_questions == 1 ? "Question" : "Questions";
-        echo "<h3 class='num_questions'>$len_questions $s</h3>";
+        echo "<p class='num_questions'>$len_questions $s</p>";
+
+
+        echo "<div class='questions_container'>";
 
         echo "<div class='topic' id='$topic_id'>";
         if ($_SESSION["loggedin"] === true) {
@@ -89,17 +92,23 @@ if ($_GET["id"] == "") {
         }
         echo "</div>";
 
-        echo "<div class='questions_container'>";
         foreach ($questions as $q_arr) {
             $qid = $q_arr["id"];
             $text = $q_arr["text"];
+            $numAnswers = count($handler->fetchAnswersToQuestion($qid));
+            $answerStr = ($numAnswers==1)? "answer": "answers";
+
             $uid = $q_arr["post_user"];
             $post_user = $handler->fetchUserById($uid);
             $username = $post_user["username"];
+
             echo "<div class='question' id='$qid'>";
+            echo "<div class='question_details'>";
             $handler->createVoteContainerHTML($q_arr);
-            echo "<p class='text'><a href='question.php?id=$qid'>$text</a></p>
+            echo "<p class='answers_count'><span>$numAnswers</span> $answerStr</p>
+<p class='text'><a href='question.php?id=$qid'>$text</a></p>
 <p class='post_user'><a href='user.php?id=$uid'>$username</a></p>";
+            echo "</div>";
             echo "</div>";
         }
         echo "</div>";

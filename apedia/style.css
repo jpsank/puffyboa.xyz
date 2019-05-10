@@ -19,10 +19,15 @@ div.jumbo {
 .title h1 {
     font-size: 4em;
     margin: 0;
+    line-height: 1em;
     border-bottom: 1px solid grey;
+    font-weight: normal;
 }
 .title p {
-    margin: 5px;
+    margin: 10px;
+}
+.title h1 span {
+    font-weight: bold;
 }
 .title h1 .A {
     color: rgb(74, 172, 233);
@@ -33,13 +38,17 @@ div.jumbo {
     font-size: 1.5em;
 }
 .left {
-    padding-bottom: 25px;
-    font-size: .5em;
+    padding-top: 10px;
+    padding-bottom: 5px;
+    font-size: .25em;
+}
+.left h1 {
+    padding-left: 10px;
 }
 
 
 div#main {
-    padding: 10px;
+    padding: 5px;
 }
 div.search_results {
     padding: 10px;
@@ -71,34 +80,91 @@ div.topics_container div {
     text-align: center;
     padding: 2px;
 }
+div.topics_container div a {
+    color: black;
+    text-decoration: none;
+}
+div.topics_container div a:hover {
+    text-decoration: underline;
+}
+div.topics_container div.inactive a {
+    color: grey;
+}
 @media(max-width: 700px) {
     div.topics_container {
         justify-content: center;
     }
 }
 
+.topic_header {
+    margin: 0;
+    font-size: 1.75em;
+}
 div.topic {
     padding: 1vw 0;
 }
 div.question {
     padding: 5px 0;
 }
-div.question .post_user {
+div.question_details {
+    display: flex;
+    align-items: center;
+    border-top: 1px solid lightgrey;
+}
+div.question_details p {
+    padding: 5px;
+    margin: 5px;
+}
+div.question p.answers_count {
+     font-size: .75em;
+     text-align: center;
+ }
+div.question p.answers_count span {
+    font-size: 1.5em;
+    display: block;
+}
+div.question p.text {
+}
+div.question p.post_user {
     font-size: .8em;
 }
-div.question .post_user a {
+div.question p.post_user a {
     text-decoration: none;
     color: black;
 }
-div.question .post_user a:hover {
+div.question p.post_user a:hover {
     text-decoration: underline;
 }
+.question_header p {
+    margin-bottom: 0;
+    font-size: .9em;
+}
+.question_header p a {
+    color: black;
+    text-decoration: none;
+}
+.question_header p a:hover {
+    text-decoration: underline;
+}
+/*.question_header p a::after {*/
+/*    content: "/";*/
+/*    font-size: 1em;*/
+/*    padding-left: 5px;*/
+/*    display: inline-block;*/
+/*}*/
 div.question_title h1 {
+    margin-top: 0;
 }
 .vote_container {
     display: inline;
     margin-right: 10px;
     float: right;
+}
+div.question_details .vote_container {
+    float: none;
+    margin: 5px;
+    padding: 5px;
+    border-right: 1px solid lightgrey;
 }
 .vote_container form {
     display: inline-flex;
@@ -107,7 +173,7 @@ div.question_title h1 {
 }
 .vote_container form input[type=submit] {
     background-color: transparent;
-    padding: 0 7px;
+    padding: 0 7px 0 2px;
     border: none;
     cursor: pointer;
     outline: none;
@@ -128,7 +194,7 @@ div.question_title h1 {
     text-decoration: none;
 }
 .questions_container {
-    padding-left: 2vw;
+    padding-left: 1vw;
 }
 .num_questions {
     padding: 10px 0;
@@ -377,5 +443,3 @@ div.user_post {
 .user_post.comment {
     border: 1px dashed lightgrey;
 }
-
-

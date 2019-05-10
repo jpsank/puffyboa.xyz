@@ -114,7 +114,12 @@ session_start();
         while ($arr = $results->fetchArray(SQLITE3_ASSOC)) {
             $id = $arr["id"];
             $name = $arr["name"];
-            echo "<div><a href='topic.php?id=$id'>$name</a></div>";
+            $num = count($handler->fetchQuestionsByTopic($id));
+            if ($num > 0) {
+                echo "<div class='active'><a href='topic.php?id=$id'>$name ($num)</a></div>";
+            } else {
+                echo "<div class='inactive'><a href='topic.php?id=$id'>$name</a></div>";
+            }
         }
         echo "</div>";
     }

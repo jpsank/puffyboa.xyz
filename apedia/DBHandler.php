@@ -42,12 +42,12 @@ class DBHandler {
         $this->initTopics();
     }
     function initTopics() {
-        $topics = ["AP Art History", "AP Biology", "AP Calculus", "AP Chemistry", "AP Chinese",
-            "AP Comparative Government & Politics", "AP Computer Science", "AP English", "AP Environmental Science",
-            "AP European History", "AP French", "AP German", "AP Human Geography", "AP Italian", "AP Japanese",
-            "AP Latin", "AP Macroeconomics", "AP Microeconomics", "AP Music Theory", "AP Physics", "AP Psychology",
-            "AP Research", "AP Seminar", "AP Spanish", "AP Statistics", "AP Studio Art",
-            "AP U.S. Government & Politics", "AP U.S. History", "AP World History"];
+        $topics = ["Art History", "Biology", "Calculus", "Chemistry", "Chinese",
+            "Comparative Government & Politics", "Computer Science", "English", "Environmental Science",
+            "European History", "French", "German", "Human Geography", "Italian", "Japanese",
+            "Latin", "Macroeconomics", "Microeconomics", "Music Theory", "Physics", "Psychology",
+            "Research", "Seminar", "Spanish", "Statistics", "Studio Art",
+            "U.S. Government & Politics", "U.S. History", "World History"];
         foreach ($topics as $t) {
             $check = $this->selectTopicsBySQL("name='$t'")->fetchArray();
             if (empty($check)) {
