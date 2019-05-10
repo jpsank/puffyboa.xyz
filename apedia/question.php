@@ -117,7 +117,7 @@ if ($_GET["id"] == "") {
         global $handler;
         $id = $post_arr["id"];
         $type = $post_arr["type"];
-        $text = $post_arr["text"];
+        $text = nl2br($post_arr["text"]);
 
         $post_user = $handler->fetchUserById($post_arr["post_user"]);
         $username = $post_user["username"];
@@ -156,9 +156,15 @@ if ($_GET["id"] == "") {
         echo "<div class='question_header'>";
         echo "<h3><a href='topic.php?id=$topic_id'>$topic_name</a></h3>";
         echo "<div class='question_title' id='$question_id'>";
-        echo "<h1>$question_text";
+
+        $question_lines = explode("\n", $question_text);
+        echo "<h1>$question_lines[0]";
         $handler->createVoteContainerHTML($question);
         echo "</h1>";
+        if (count($question_lines) > 1) {
+            echo "<p>" . implode("<BR>", array_splice($question_lines,1)) . "</p>";
+        }
+
         echo "</div>";
         echo "</div>";
 
