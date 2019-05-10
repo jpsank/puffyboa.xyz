@@ -159,7 +159,6 @@ if ($_GET["id"] == "") {
         echo "<h1>$question_text";
         $handler->createVoteContainerHTML($question);
         echo "</h1>";
-        createSubmitForm($question_id, "Add an answer", true);
         echo "</div>";
         echo "</div>";
 
@@ -169,6 +168,8 @@ if ($_GET["id"] == "") {
         $len_answers = sizeof($answers);
         $s = $len_answers==1 ? "Answer": "Answers";
         echo "<h3 class='num_answers'>$len_answers $s</h3>";
+
+        createSubmitForm($question_id, "Add an answer", true);
 
         echo "<div class='answers_container'>";
 

@@ -71,6 +71,13 @@ if ($_GET["id"] == "") {
         $name = $topic["name"];
         echo "<h1>$name</h1>";
 
+
+        $questions = $handler->fetchQuestionsByTopic($topic_id);
+        $questions = $handler->sortPostsByVotes($questions);
+        $len_questions = sizeof($questions);
+        $s = $len_questions == 1 ? "Question" : "Questions";
+        echo "<h3 class='num_questions'>$len_questions $s</h3>";
+
         echo "<div class='topic' id='$topic_id'>";
         if ($_SESSION["loggedin"] === true) {
             echo "<form onfocusout='focusOut(this)' onfocusin='focusIn(this)' class='submit block' method='post'>
@@ -81,12 +88,6 @@ if ($_GET["id"] == "") {
             echo "<p class='login_link'><a href='login.php'>Login to <span>Ask a question</span></a></p>";
         }
         echo "</div>";
-
-        $questions = $handler->fetchQuestionsByTopic($topic_id);
-        $questions = $handler->sortPostsByVotes($questions);
-        $len_questions = sizeof($questions);
-        $s = $len_questions == 1 ? "Question" : "Questions";
-        echo "<h3 class='num_questions'>$len_questions $s</h3>";
 
         echo "<div class='questions_container'>";
         foreach ($questions as $q_arr) {
