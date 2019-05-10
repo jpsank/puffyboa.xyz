@@ -152,6 +152,10 @@ canvas#fidget {
 	text-decoration: none;
 	color: black;
 }
+#apedia a span {
+	font-family: fantasy;
+	line-height: 1em;
+}
 #apedia a .A {
 	color: rgb(74, 172, 233);
 	font-size: 1.5em;

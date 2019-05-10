@@ -28,6 +28,7 @@ div.jumbo {
 }
 .title h1 span {
     font-weight: bold;
+    font-family: fantasy;
 }
 .title h1 .A {
     color: rgb(74, 172, 233);
@@ -81,14 +82,17 @@ div.topics_container div {
     padding: 2px;
 }
 div.topics_container div a {
-    color: black;
+    color: #07C;
     text-decoration: none;
 }
 div.topics_container div a:hover {
-    text-decoration: underline;
+    color: #0AF;
 }
 div.topics_container div.inactive a {
     color: grey;
+}
+div.topics_container div.inactive a:hover {
+    color: #555;
 }
 @media(max-width: 700px) {
     div.topics_container {
@@ -97,7 +101,7 @@ div.topics_container div.inactive a {
 }
 
 .topic_header {
-    margin: 0;
+    margin: 8px 0 0 0;
     font-size: 1.75em;
 }
 div.topic {
@@ -123,7 +127,13 @@ div.question p.answers_count span {
     font-size: 1.5em;
     display: block;
 }
-div.question p.text {
+div.question p.text a {
+    text-decoration: none;
+    color: #07C;
+}
+div.question p.text a:hover {
+    text-decoration: none;
+    color: #0AF;
 }
 div.question p.post_user {
     font-size: .8em;
@@ -136,7 +146,7 @@ div.question p.post_user a:hover {
     text-decoration: underline;
 }
 .question_header p {
-    margin-bottom: 0;
+    margin-bottom: 10px;
     font-size: .9em;
 }
 .question_header p a {
@@ -154,6 +164,7 @@ div.question p.post_user a:hover {
 /*}*/
 div.question_title h1 {
     margin-top: 0;
+    font-weight: normal;
 }
 .vote_container {
     display: inline;
@@ -216,7 +227,7 @@ div.post.answer {
     padding: 10px 1vw 0 1vw;
     margin-top: 10px;
     font-size: 1.1em;
-    background-color: whitesmoke;
+    background-color: #fafafa;
 }
 div.post.answer p.text {
     margin: 0 0 30px 0;
