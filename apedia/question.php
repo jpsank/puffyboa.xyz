@@ -93,6 +93,10 @@ if ($_GET["id"] == "") {
 <div id="main">
     <?php
 
+    function fixSpaces($str) {
+        return str_replace('  ', '&nbsp;&nbsp;', $str);
+    }
+
     function constrainString($str) {
         if (strlen($str) > 100) {
             return substr($str, 0, 100) . "...";
@@ -117,7 +121,7 @@ if ($_GET["id"] == "") {
         global $handler;
         $id = $post_arr["id"];
         $type = $post_arr["type"];
-        $text = nl2br(str_replace(' ', '&nbsp;', $post_arr["text"]));
+        $text = nl2br(fixSpaces($post_arr["text"]));
 
         $post_user = $handler->fetchUserById($post_arr["post_user"]);
         $username = $post_user["username"];
@@ -157,7 +161,7 @@ if ($_GET["id"] == "") {
         echo "<h3><a href='topic.php?id=$topic_id'>$topic_name</a></h3>";
         echo "<div class='question_title' id='$question_id'>";
 
-        $question_lines = explode("\n", str_replace(' ', '&nbsp;', $question_text));
+        $question_lines = explode("\n", fixSpaces($question_text));
         echo "<h1>$question_lines[0]";
         $handler->createVoteContainerHTML($question);
         echo "</h1>";
