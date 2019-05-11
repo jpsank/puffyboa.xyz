@@ -240,9 +240,8 @@ const ctx = canvas.getContext("2d");
 let idx = 0;
 
 function loop() {
-	if (idx % 2 === 0) {
+	if (idx % 3 === 0) {
 		drawCanvasBasedOn(game.array);
-	} else {
 		game.step();
 	}
 	idx++;

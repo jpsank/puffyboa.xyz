@@ -48,12 +48,7 @@ Fidget.prototype.spin = function () {
 const fidget = new Fidget(canvas.width/2,canvas.height/2,canvas.width/2-50);
 
 function loop() {
-    // ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "white";
-    ctx.beginPath();
-    ctx.ellipse(canvas.width/2,canvas.height/2,canvas.width/2,canvas.height/2,
-        0,0,2*Math.PI);
-    ctx.fill();
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     fidget.draw();
     fidget.spin();
@@ -77,6 +72,7 @@ function mouseMove(e) {
         if ((fidget.x-fidget.size < mouseX < fidget.x+fidget.size && fidget.y-fidget.size < mouseY < fidget.y+fidget.size)) {
             let x;
             let y;
+            let dist = Math.sqrt(Math.pow(mouseX-fidget.x,2)+Math.pow(mouseY-fidget.y,2));
             if (mouseY > fidget.y) {
                 x = e.movementX;
             } else {
@@ -87,7 +83,7 @@ function mouseMove(e) {
             } else {
                 y = e.movementY;
             }
-            fidget.accel = (x+y)/100;
+            fidget.accel = (x+y)/(10+dist*1.2);
         }
     }
 }
@@ -140,18 +136,13 @@ function getTouchPos(canvasDom, touchEvent) {
 }
 
 function resize() {
-    // canvas.width = 120 + window.innerWidth / 5;
-    // canvas.height = 120 + window.innerWidth / 5;
-    let size = 400;
-    if (window.innerWidth < 600) {
-        size = window.innerWidth-200;
-    }
-    size = size < 100 ? 100 : size;
-    canvas.width = size;
-    canvas.height = size;
-	fidget.x = canvas.width/2;
-	fidget.y = canvas.height/2;
-	fidget.size = canvas.width/2-canvas.width/10;
+    // let size = 200;
+    // size = size < 100 ? 100 : size;
+    // canvas.width = size;
+    // canvas.height = size;
+	// fidget.x = canvas.width/2;
+	// fidget.y = canvas.height/2;
+	// fidget.size = canvas.width/2-canvas.width/10;
 }
 
 function setup() {
