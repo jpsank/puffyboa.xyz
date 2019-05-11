@@ -69,22 +69,21 @@ function mouseMove(e) {
     let mouseX = e.offsetX;
     let mouseY = e.offsetY;
     if (drag) {
-        if ((fidget.x-fidget.size < mouseX < fidget.x+fidget.size && fidget.y-fidget.size < mouseY < fidget.y+fidget.size)) {
-            let x;
-            let y;
-            let dist = Math.sqrt(Math.pow(mouseX-fidget.x,2)+Math.pow(mouseY-fidget.y,2));
-            if (mouseY > fidget.y) {
-                x = e.movementX;
-            } else {
-                x = -e.movementX;
-            }
-            if (mouseX > fidget.x) {
-                y = -e.movementY;
-            } else {
-                y = e.movementY;
-            }
-            fidget.accel = (x+y)/(10+dist*1.2);
-        }
+        dragSpin(mouseX-e.movementX, mouseY-e.movementY, mouseX,mouseY);
+    }
+}
+
+function dragSpin(startX, startY, endX, endY) {
+    if ((fidget.x-fidget.size < endX < fidget.x+fidget.size && fidget.y-fidget.size < endY < fidget.y+fidget.size)) {
+        let x1 = startX-fidget.x;
+        let y1 = -(startY-fidget.y);
+        let x2 = endX-fidget.x;
+        let y2 = -(endY-fidget.y);
+
+        let a1 = Math.atan2(y1,x1);  // angle from fidget origin to starting point
+        let a2 = Math.atan2(y2,x2);  // angle from fidget origin to ending point
+
+        fidget.accel = a2-a1;
     }
 }
 
@@ -109,21 +108,7 @@ function touchMove(e) {
     }
     const newPos = getTouchPos(canvas, e);
     if (drag) {
-        if ((fidget.x-fidget.size < newPos.x < fidget.x+fidget.size && fidget.y-fidget.size < newPos.y < fidget.y+fidget.size)) {
-            let x;
-            let y;
-            if (newPos.y > fidget.y) {
-                x = (newPos.x-touchPos.x);
-            } else {
-                x = -(newPos.x-touchPos.x);
-            }
-            if (newPos.x > fidget.x) {
-                y = -(newPos.y-touchPos.y);
-            } else {
-                y = (newPos.y-touchPos.y);
-            }
-            fidget.accel = (x+y)/100;
-        }
+        dragSpin(touchPos.x, touchPos.y, newPos.x, newPos.y);
     }
     touchPos = newPos;
 }
