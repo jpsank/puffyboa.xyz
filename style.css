@@ -19,14 +19,14 @@ h1 {
 	font-size: 3.2vw;
 	text-align: center;
 	display: flex;
+	flex-direction: row-reverse;
 	align-items: center;
 	justify-content: center;
 	margin: 10px 20px;
-	border-bottom: 1px solid grey;
 }
 #fidget-container {
 	margin-right: 4vw;
-	margin-top: 3vw;
+	margin-top: 2.5vw;
 }
 canvas#fidget {
 	width: 100%;
@@ -35,7 +35,7 @@ canvas#fidget {
 @media (max-width: 800px) {
 	#fidget-container {
 		margin-right: 0;
-		margin-top: 40px;
+		margin-top: 0;
 	}
 	.jumbotron {
 		flex-direction: column;
@@ -60,6 +60,8 @@ div#main {
 }
 
 canvas#canvas-of-life {
+	border-top: 1px solid darkgrey;
+	border-bottom: 1px solid darkgrey;
 }
 @media (max-width: 600px) {
 	canvas#canvas-of-life {
