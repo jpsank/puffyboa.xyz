@@ -61,7 +61,6 @@ div#main {
 
 canvas#canvas-of-life {
 	border-top: 1px solid darkgrey;
-	border-bottom: 1px solid darkgrey;
 }
 @media (max-width: 600px) {
 	canvas#canvas-of-life {
@@ -92,7 +91,12 @@ section#projects ul {
 section#projects ul li {
 	margin: 1vw;
 	padding: 1vw;
-	background-color: #fafafa;
+	/*background-color: #fafafa;*/
+}
+@media (max-width: 800px) {
+	section#projects ul li {
+		margin-top: 2vw;
+	}
 }
 section#projects ul li > a {
 	font-size: 1.2em;
@@ -158,6 +162,7 @@ footer a img {
 #apedia h2 {
 	font-size: 2.5em;
 	margin: 0;
+	line-height: 1em;
 }
 #apedia h2 a {
 	text-decoration: none;
@@ -165,7 +170,6 @@ footer a img {
 }
 #apedia a span {
 	font-family: fantasy;
-	line-height: 1em;
 }
 #apedia a .A {
 	color: rgb(74, 172, 233);
