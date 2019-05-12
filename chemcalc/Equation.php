@@ -13,7 +13,7 @@ class Equation {
         $dict = [];
         foreach ($molecules as $mol) {
             foreach ($mol->countConstituents() as $sym=>$num) {
-                if (!array_key_exists($sym, $dict)) {
+                if (!key_exists($sym, $dict)) {
                     $dict[$sym] = 0;
                 }
                 $dict[$sym] += $num;
@@ -29,13 +29,12 @@ class Equation {
 
     // BALANCING CHEMICAL EQUATIONS
     function getBalancedEq() {
-
         $dict = [];
         $len1 = sizeof($this->reactants);
         $molecules = array_merge($this->reactants,$this->products);
         foreach ($molecules as $i=>$mol) {
             foreach ($mol->countConstituents(1) as $sym=>$num) {
-                if (!array_key_exists($sym, $dict)) {
+                if (!key_exists($sym, $dict)) {
                     $dict[$sym] = array_fill(0,sizeof($molecules),0);
                 }
                 if ($i < $len1) {  // molecule is a reactant
@@ -48,26 +47,38 @@ class Equation {
         $matrix = array_values($dict);
 
         $balanced = array_map(function($x) { return abs($x); }, $this->balance($matrix));
-        // convert into whole number coefficients
-        for ($i=0; $i<count($balanced); $i++) {
-            $m = float2rat($balanced[$i])[1];
-            if ($m > 1) {
-                for ($j=0; $j<count($balanced); $j++) {
-                    $balanced[$j] *= $m;
+
+        if (in_array(0,$balanced)) {
+            return false;
+        } else {
+            // convert into whole number coefficients
+            for ($i = 0; $i < count($balanced); $i++) {
+                $m = float2rat($balanced[$i])[1];
+                if ($m > 1) {
+                    for ($j = 0; $j < count($balanced); $j++) {
+                        $balanced[$j] *= $m;
+                    }
                 }
             }
-        }
+            $balanced = array_map(function ($x) {return round($x); }, $balanced);
 
-        $newEq = new Equation(deepCopy($this->reactants), deepCopy($this->products));
-        $numReactants = count($newEq->reactants);
-        foreach ($balanced as $i=>$n) {
-            if ($i < $numReactants) {
-                $newEq->reactants[$i]->num = $n;
+            $newReactants = deepCopy($this->reactants);
+            $newProducts = deepCopy($this->products);
+            $numReactants = count($newReactants);
+            foreach ($balanced as $i => $n) {
+                if ($i < $numReactants) {
+                    $newReactants[$i]->num = $n;
+                } else {
+                    $newProducts[$i - $numReactants]->num = $n;
+                }
+            }
+            $newEq = new Equation($newReactants, $newProducts);
+            if ($newEq->isBalanced()) {
+                return $newEq;
             } else {
-                $newEq->products[$i-$numReactants]->num = $n;
+                return false;
             }
         }
-        return $newEq;
     }
     function balance($matrix) {
         $reduced = rref($matrix);

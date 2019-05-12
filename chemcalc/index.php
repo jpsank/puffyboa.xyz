@@ -121,6 +121,8 @@ function prettyPrint($dict) {
                         if ($newEq) {
                             $flat = urlencode($newEq->getEquationStr(false,false));
                             echo "<tr><td><a class='blue' href='?input=$flat'>Go to balanced version</a></td></tr>";
+                        } else {
+                            echo "<tr><td class='red'>Unable to calculate balanced equation</td></tr>";
                         }
                     }
 

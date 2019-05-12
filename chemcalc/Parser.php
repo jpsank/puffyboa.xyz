@@ -42,16 +42,16 @@ class Parser {
             $formula = substr($formula,0,$matches[0][1]);
         }
 
-        // If formula not in appendix, try to find closest match
-        if (!array_key_exists($formula, $APPENDIX)) {
-            foreach (array_keys($APPENDIX) as $m) {
-                if (startsWith($m, $formula)) {
-                    $formula = $m;
-                    break;
-                }
-            }
-        }
-        if (array_key_exists($formula, $APPENDIX)) {
+//        // If formula not in appendix, try to find closest match
+//        if (!array_key_exists($formula, $APPENDIX)) {
+//            foreach (array_keys($APPENDIX) as $m) {
+//                if (startsWith($m, $formula)) {
+//                    $formula = $m;
+//                    break;
+//                }
+//            }
+//        }
+        if (key_exists($formula, $APPENDIX)) {
             $appendices = $APPENDIX[$formula];
         } else {
             $appendices = null;
