@@ -30,7 +30,14 @@ if (!empty($_POST["username"]) && !empty($_POST["password"]) && !empty($_POST["p
             } else {  // username not already taken
                 $pass_hash = password_hash($password, PASSWORD_DEFAULT);
                 if ($handler->insertUser($username, $pass_hash)) {
-                    header("location: login.php");
+                    $user_arr = $handler->fetchUserByName($username);
+
+                    session_start();
+                    $_SESSION["loggedin"] = true;
+                    $_SESSION["id"] = $user_arr["id"];
+                    $_SESSION["username"] = htmlspecialchars($user_arr["username"]);
+
+                    header("location: index.php");
                 } else {
                     $err_message = "Something went wrong. Please try again later.";
                 }
