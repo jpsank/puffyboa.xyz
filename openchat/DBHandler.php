@@ -2,7 +2,6 @@
 
 class DBHandler {
     private $db;
-    private $per_page_limit = 50;
 
     function __construct($fp) {
         $this->db = new SQLite3($fp);
@@ -53,93 +52,33 @@ class DBHandler {
         }
     }
 
+    function fetchMessagesInPage($page, $per_page=50) {
+        $offset = $page*$per_page;
+
+        // Fetch messages from database
+        $result = $this->selectBySQL("Messages", "ORDER BY post_date DESC LIMIT $per_page OFFSET $offset");
+        $data = iterator_to_array($this->fetchResultArrays($result));
+
+        $num_rows = $this->countRows("Messages");
+        $num_pages = ceil($num_rows / (float)$per_page);
+
+        $data = [
+            "metadata"=>["num_pages"=>$num_pages, "num_messages"=>$num_rows],
+            "result"=>$data];
+        return $data;
+    }
+
     function fetchMessagesAfter($id) {
         $result = $this->selectBySQL("Messages", "WHERE id > $id ORDER BY post_date DESC");
         $data = iterator_to_array($this->fetchResultArrays($result));
+        $data = [
+            "metadata"=>["num_messages"=>sizeof($data)],
+            "result"=>$data
+        ];
         return $data;
     }
 
     // High-level functions
-
-    function display($page=0) {
-        $offset = $page*$this->per_page_limit;
-
-        // Fetch messages from database
-        $result = $this->selectBySQL("Messages", "ORDER BY post_date DESC LIMIT $this->per_page_limit OFFSET $offset");
-        $data = iterator_to_array($this->fetchResultArrays($result));
-
-        foreach ($data as $idx => $val) {
-            $id = $val["id"];
-            $message = htmlspecialchars($val["message"]);
-            $post_date = strtotime($val["post_date"]);
-            $has_attachment = $val["has_attachment"];
-
-            $t = time()-$post_date;
-            $u = "seconds";
-            if ($t > 60) {
-                $t = round($t/60);
-                $u = "minutes";
-
-                if ($t > 60) {
-                    $t = round($t/60);
-                    $u = "hours";
-
-                    if ($t > 24) {
-                        $t = round($t/24);
-                        $u = "days";
-                    }
-                }
-            }
-            $html = "<div id='$id' class='message'>";
-            $html .= "<p class='t'>$t $u ago</p>";
-            $html .= "<p class='m'>$message</p>";
-            if ($has_attachment) {
-                $file_path = 'uploads/' . $id;
-
-                $finfo = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $file_path);
-                $file_text = "";
-                if (substr($finfo,0,4) == "text") {
-                    $file_text = file_get_contents($file_path);
-                }
-                $html .= "<img src='$file_path' alt='$file_text'>";
-            }
-            $html .= "</div>";
-            echo $html;
-        }
-
-        $num_rows = $this->countRows("Messages");
-        if ($num_rows > 0) {
-            $num_pages = ceil($num_rows / (float)$this->per_page_limit);
-            echo "<div class='pages'>";
-
-            $prev_adj = $page;
-            if ($prev_adj > 0) {
-                echo "<div><a href='?page=$prev_adj'>&lt;</a></div>";
-            }
-
-            for ($i = $page - 5; $i < $page + 6; $i++) {
-                if ($i >= 0 && $i < $num_pages) {
-                    $i2 = $i + 1;
-                    if ($i == $page) {
-                        echo "<div class='current'>$i2</div>";
-                    } else {
-                        if ($i < $page) {
-                            $class = "previous";
-                        } else if ($i > $page) {
-                            $class = "next";
-                        }
-                        echo "<div class='$class'><a href='?page=$i2'>$i2</a></div>";
-                    }
-                }
-            }
-
-            $next_adj = $page + 2;
-            if ($next_adj <= $num_pages) {
-                echo "<div><a href='?page=$next_adj'>&gt;</a></div>";
-            }
-            echo "</div>";
-        }
-    }
 
     function postMessage() {
         $text = $_POST['text'];
