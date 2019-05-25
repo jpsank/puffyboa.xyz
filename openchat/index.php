@@ -68,15 +68,15 @@ if (isset($_POST['text'])) {
 		</form>
 
 		<div id="ledger">
-			<?php
+            <?php
             if (isset($_GET["page"]) && $_GET["page"] != "") {
                 $page = (int)$_GET["page"]-1;
                 $handler->display($page);
             } else {
                 $handler->display();
             }
-			$handler->close();
-			?>
+            $handler->close();
+            ?>
 		</div>
 
 	</section>
@@ -99,5 +99,67 @@ if (isset($_POST['text'])) {
 			img.style.display = "block";
 		}
 	}
+
+	function fetchUpdates() {
+	    const id = ledger.children[0].id;
+        const xhr = new XMLHttpRequest();
+	    xhr.open('GET', `fetch.php?last_id=${id}`);
+	    xhr.onreadystatechange = () => {if (xhr.readyState === 4 && xhr.status === 200) {
+	        addMessages(xhr.response);
+        }};
+	    xhr.send();
+
+        // loops update fetcher every 5 seconds
+	    setTimeout(fetchUpdates, 5000);
+    }
+
+    function addMessages(messages) {
+	    messages = JSON.parse(messages);
+        for (const msg of messages) {
+            let time_passed = (Date.now() - Date.parse(msg["post_date"] + " UTC"))/1000;
+            let units = 'seconds';
+            if (time_passed > 60) {
+                time_passed /= 60;
+                units = 'minutes';
+
+                if (time_passed > 60) {
+                    time_passed /= 60;
+                    units = 'hours';
+
+                    if (time_passed > 24) {
+                        time_passed /= 24;
+                        units = 'days';
+                    }
+                }
+            }
+            time_passed = Math.round(time_passed);
+
+            const div = document.createElement('div');
+            div.id = msg.id;
+            div.classList.add('message');
+
+            const time = document.createElement('p');
+            time.classList.add('t');
+            time.textContent = `${time_passed} ${units} ago`;
+            div.appendChild(time);
+
+            const message = document.createElement('p');
+            message.classList.add('m');
+            message.textContent = msg.message;
+            div.appendChild(message);
+
+            if (msg["has_attachment"]) {
+                const img = document.createElement('img');
+                img.src = `uploads/${msg.id}`;
+                div.appendChild(img);
+            }
+
+            // adds the new div to the top of the ledger (hopefully)
+            ledger.insertBefore(div, ledger.children[0]);
+        }
+    }
+
+    const ledger = document.getElementById('ledger');
+    setTimeout(fetchUpdates, 5000);
 
 </script>
