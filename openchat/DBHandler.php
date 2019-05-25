@@ -18,9 +18,9 @@ class DBHandler {
         // Create table if not already created
 
         $sql = "CREATE TABLE IF NOT EXISTS Messages (
-		id INTEGER PRIMARY KEY, 
+		id INTEGER PRIMARY KEY,
 		message VARCHAR(2000) NOT NULL,
-		post_date TIMESTAMP,
+		post_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 		has_attachment bit NOT NULL DEFAULT (0)
 		)";
         $this->db->exec($sql);
@@ -108,50 +108,50 @@ class DBHandler {
         }
 
         $num_rows = $this->countRows("Messages");
-        $num_pages = ceil($num_rows / (float)$this->per_page_limit);
-        echo "<div class='pages'>";
+        if ($num_rows > 0) {
+            $num_pages = ceil($num_rows / (float)$this->per_page_limit);
+            echo "<div class='pages'>";
 
-        $prev_adj = $page;
-        if ($prev_adj > 0) {
-            echo "<div><a href='?page=$prev_adj'>&lt;</a></div>";
-        }
+            $prev_adj = $page;
+            if ($prev_adj > 0) {
+                echo "<div><a href='?page=$prev_adj'>&lt;</a></div>";
+            }
 
-        for ($i=$page-5; $i<$page+6; $i++) {
-            if ($i >= 0 && $i < $num_pages) {
-                $i2 = $i + 1;
-                if ($i == $page) {
-                    echo "<div class='current'>$i2</div>";
-                } else {
-                    if ($i < $page) {
-                        $class = "previous";
-                    } else if ($i > $page) {
-                        $class = "next";
+            for ($i = $page - 5; $i < $page + 6; $i++) {
+                if ($i >= 0 && $i < $num_pages) {
+                    $i2 = $i + 1;
+                    if ($i == $page) {
+                        echo "<div class='current'>$i2</div>";
+                    } else {
+                        if ($i < $page) {
+                            $class = "previous";
+                        } else if ($i > $page) {
+                            $class = "next";
+                        }
+                        echo "<div class='$class'><a href='?page=$i2'>$i2</a></div>";
                     }
-                    echo "<div class='$class'><a href='?page=$i2'>$i2</a></div>";
                 }
             }
-        }
 
-        $next_adj = $page+2;
-        if ($next_adj <= $num_pages) {
-            echo "<div><a href='?page=$next_adj'>&gt;</a></div>";
+            $next_adj = $page + 2;
+            if ($next_adj <= $num_pages) {
+                echo "<div><a href='?page=$next_adj'>&gt;</a></div>";
+            }
+            echo "</div>";
         }
-        echo "</div>";
     }
 
     function postMessage() {
         $text = $_POST['text'];
-        $time = strftime("%Y-%m-%d %H:%M:%S",time());
         if ($_FILES["userfile"]["error"] == UPLOAD_ERR_NO_FILE) {
             $attached = 0;
         } else {
             $attached = 1;
         }
 
-        $sql = "INSERT INTO Messages (message, post_date, has_attachment) VALUES (:message,:post_date,:attached);";
+        $sql = "INSERT INTO Messages (message, has_attachment) VALUES (:message,:attached);";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':message', $text);
-        $stmt->bindParam(':post_date', $time);
         $stmt->bindParam(':attached', $attached);
         $stmt->execute();
 
