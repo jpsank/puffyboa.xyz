@@ -68,15 +68,15 @@ if (isset($_POST['text'])) {
 		</form>
 
 		<div id="ledger">
-			<?php
+            <?php
             if (isset($_GET["page"]) && $_GET["page"] != "") {
                 $page = (int)$_GET["page"]-1;
                 $handler->display($page);
             } else {
                 $handler->display();
             }
-			$handler->close();
-			?>
+            $handler->close();
+            ?>
 		</div>
 
 	</section>

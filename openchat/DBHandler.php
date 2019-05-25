@@ -8,6 +8,25 @@ class DBHandler {
         $this->db = new SQLite3($fp);
     }
 
+    function init() {
+        if (!file_exists("uploads")) {
+            $oldmask = umask(0);
+            mkdir("uploads", 0777);
+            umask($oldmask);
+        }
+
+        // Create table if not already created
+
+        $sql = "CREATE TABLE IF NOT EXISTS Messages (
+		id INTEGER PRIMARY KEY, 
+		message VARCHAR(2000) NOT NULL,
+		post_date TIMESTAMP,
+		has_attachment bit NOT NULL DEFAULT (0)
+		)";
+        $this->db->exec($sql);
+
+    }
+
     // Low-level select function
 
     function selectBySQL($table, $sql) {
@@ -34,27 +53,13 @@ class DBHandler {
         }
     }
 
-    // Everything else
-
-    function init() {
-
-        if (!file_exists("uploads")) {
-            $oldmask = umask(0);
-            mkdir("uploads", 0777);
-            umask($oldmask);
-        }
-
-        // Create table if not already created
-
-        $sql = "CREATE TABLE IF NOT EXISTS Messages (
-		id INTEGER PRIMARY KEY, 
-		message VARCHAR(2000) NOT NULL,
-		post_date TIMESTAMP,
-		has_attachment bit NOT NULL DEFAULT (0)
-		)";
-        $this->db->exec($sql);
-
+    function fetchMessagesAfter($id) {
+        $result = $this->selectBySQL("Messages", "WHERE id > $id ORDER BY post_date DESC");
+        $data = iterator_to_array($this->fetchResultArrays($result));
+        return $data;
     }
+
+    // High-level functions
 
     function display($page=0) {
         $offset = $page*$this->per_page_limit;
