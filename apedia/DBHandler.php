@@ -4,7 +4,7 @@ class DBHandler {
     private $db;
 
     function __construct($fp) {
-        $this->db = new SQLite3($fp);;
+        $this->db = new SQLite3($fp);
     }
 
     function init() {

@@ -80,3 +80,26 @@ section {
 		padding: 1vw;
 	}
 }
+
+div.pages {
+	display: flex;
+	justify-content: center;
+}
+div.pages div {
+	padding: 1vw;
+}
+div.pages div a {
+	text-decoration: none;
+	color: cornflowerblue;
+}
+div.pages div a:hover, div.pages div a:hover {
+	text-decoration: underline;
+	color: dodgerblue;
+}
+div.pages div.current {
+	color: black;
+}
+div.pages div.current:hover {
+	color: black;
+}
+
