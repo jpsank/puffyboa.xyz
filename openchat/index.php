@@ -100,4 +100,60 @@ if (isset($_POST['text'])) {
 		}
 	}
 
+	function fetchUpdates() {
+	    const id = document.getElementById('ledger').children[0].id;
+        const xhr = new XMLHttpRequest();
+	    xhr.open('GET', `fetch.php?id=${id}`);
+	    xhr.onreadystatechange = () => {if (xhr.readyState === 4 && xhr.status === 200) {
+	        addMessages(xhr.response);
+        }};
+	    xhr.send();
+
+        // loops update fetcher every 5 seconds
+	    setTimeout(fetchUpdates, 5000);
+    }
+
+    function addMessages(messages) {
+        for (const msg of messages) {
+            let time_passed = (new Date().getTime()) - new Date(msg.post_date);
+            let units = 'seconds';
+            if (time_passed > 60) {
+                time_passed /= 60;
+                units = 'minutes';
+            } else if (time_passed > 3600) {
+                time_passed /= 3600;
+                units = 'hours';
+            } else if (time_passed > 86400) {
+                time_passed /= 86400;
+                units = 'days';
+            }
+            time_passed = Math.round(time_passed);
+
+            const div = document.createElement('div');
+            div.id = msg.id;
+            div.classList.add('message');
+
+            const time = document.createElement('p');
+            time.classList.add('t');
+            time.textContent = `${time_passed} ${units} ago`;
+            div.addChild(time);
+
+            const message = document.createElement('p');
+            message.classList.add('m');
+            message.textContent = msg.message;
+            div.addChild(message);
+
+            if (msg.has_attachment) {
+                const img = document.createElement('img');
+                img.src = `uploads/${msg.id}`;
+                div.addChild(img);
+            }
+
+            // adds the new div to the top of the ledger (hopefully)
+            document.getElementsByClassName('ledger').insertBefore(div, document.getElementById('ledger').children[0]);
+        }
+    }
+
+    setTimeout(fetchUpdates, 5000);
+
 </script>
