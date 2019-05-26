@@ -60,7 +60,7 @@ div#main {
 }
 
 canvas#canvas-of-life {
-	border-top: 1px solid darkgrey;
+	/*border-top: 1px solid darkgrey;*/
 }
 @media (max-width: 600px) {
 	canvas#canvas-of-life {
@@ -169,7 +169,7 @@ footer a img {
 	color: black;
 }
 #apedia a span {
-	font-family: fantasy;
+	font-family: serif;
 }
 #apedia a .A {
 	color: rgb(74, 172, 233);
