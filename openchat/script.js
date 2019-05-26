@@ -59,24 +59,32 @@ function getTimePassed(time) {
 function updateTimePassed(messageElem) {
     let post_date = messageElem.getAttribute("data-post-date");
     [time_passed, units] = getTimePassed(post_date);
+    let newText = `${time_passed} ${units} ago`;
+
     let time = messageElem.getElementsByClassName("t")[0];
-    time.textContent = `${time_passed} ${units} ago`;
+    if (time.textContent !== newText) {
+        time.textContent = newText;
+        return true;
+    } else {
+        return false;
+    }
 }
 function updateTimePassedElems() {
     let messageElems = document.getElementsByClassName("message");
     for (let elem of messageElems) {
-        updateTimePassed(elem);
+        let check = updateTimePassed(elem);
+        if (check === false) {
+            break;
+        }
     }
 }
 
 function addMessages(messages, top=false) {
     for (const msg of messages) {
-        let post_date = msg["post_date"] + " UTC";
-
 
         const div = document.createElement('div');
         div.id = msg.id;
-        div.setAttribute("data-post-date", post_date);
+        div.setAttribute("data-post-date", msg["post_date"] + " UTC");
         div.classList.add('message');
 
         const time = document.createElement('p');

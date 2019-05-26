@@ -17,6 +17,7 @@ session_start();
     <link rel="stylesheet" type="text/css" href="style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>APedia - puffyboa.xyz</title>
+    <link rel="shortcut icon" href="../assets/img/favicon.png" />
 </head>
 
 <body>
