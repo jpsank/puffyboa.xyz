@@ -185,4 +185,6 @@ const ledger = document.getElementById('ledger');
 
 initialFetch();
 
-setTimeout(fetchUpdates, 5000);
+if (current_page === 0) {
+    setTimeout(fetchUpdates, 5000);
+}
