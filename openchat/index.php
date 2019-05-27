@@ -61,8 +61,7 @@ if (isset($_POST['text'])) {
 
 	<section id="main">
 
-		<form id="form" enctype="multipart/form-data" action="?page=1" method="post"
-            onsubmit="return sendMessage(this);">
+		<form id="form" enctype="multipart/form-data" onsubmit="return sendMessage(this);">
 		    <input type="text" name="text" placeholder="type something" maxlength="1000" required="required">
 		    <input name="userfile" accept="image/*" type="file" />
 		    <input type="submit">
