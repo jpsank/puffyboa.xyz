@@ -196,7 +196,7 @@ function sendMessage(form) {
     const formData = new FormData(form);
 
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', 'control');
+    xhr.open('POST', '');
     xhr.onreadystatechange = () => {if (xhr.readyState === 4 && xhr.status === 200) {
         // Fetch updates including new message from db once msg is sent
         // We don't want to just add the new msg directly,
