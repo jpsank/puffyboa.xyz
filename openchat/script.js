@@ -202,7 +202,14 @@ function sendMessage(form) {
         // We don't want to just add the new msg directly,
         // because if a new message was posted before, but not fetched,
         // they'll be out of order
-        fetchUpdates(false);
+        if (current_page === 0) {
+            fetchUpdates(false);
+        } else {
+            // If user isn't on the first page, go home to see the latest messages,
+            // If we try to fetch on some random page, every message on more recent pages will be smushed onto
+            // the current page
+            window.location = window.location.href.split(/[?#]/)[0];
+        }
     }};
     xhr.send(formData);
 
