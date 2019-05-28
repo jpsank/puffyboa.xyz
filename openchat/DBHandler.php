@@ -101,7 +101,7 @@ class DBHandler {
                 $error = "Image upload error: Code " . $_FILES["userfile"]["error"];
             }
 
-            $last_id = $this->db->lastInsertId();
+            $last_id = $this->db->lastInsertRowID();
             $target_file = 'uploads/' . $last_id;
 
             if (isset($error)) {
