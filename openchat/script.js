@@ -84,7 +84,7 @@ function addMessages(messages, top=false) {
 
         const div = document.createElement('div');
         div.id = msg.id;
-        div.setAttribute("data-post-date", msg["post_date"] + " UTC");
+        div.setAttribute("data-post-date", msg["post_date"].replace(' ', 'T') + "Z");
         div.classList.add('message');
 
         const time = document.createElement('p');
