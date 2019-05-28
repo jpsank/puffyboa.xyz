@@ -21,7 +21,7 @@ function findGetParameter(parameterName) {
     return result;
 }
 
-function fetchUpdates() {
+function fetchUpdates(repeat=true) {
     const id = ledger.children[0].id;
     const xhr = new XMLHttpRequest();
     xhr.open('GET', `fetch.php?last_id=${id}`);
@@ -33,7 +33,10 @@ function fetchUpdates() {
     xhr.send();
 
     // loops update fetcher every 5 seconds
-    setTimeout(fetchUpdates, 5000);
+    // if repeat is false (for a one-off), it won't start another loop
+    if (repeat) {
+        setTimeout(fetchUpdates, 5000);
+    }
 }
 
 function getTimePassed(time) {
@@ -54,6 +57,11 @@ function getTimePassed(time) {
         }
     }
     time_passed = Math.round(time_passed);
+
+    // if it's 1 hour, 1 minute, etc, take off the S
+    if (time_passed === 1) {
+        units = units.slice(0, -1)
+    }
     return [time_passed, units];
 }
 function updateTimePassed(messageElem) {
@@ -182,6 +190,34 @@ function initialFetch() {
     }};
     xhr.send();
 
+}
+
+function sendMessage(form) {
+    const formData = new FormData(form);
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', '');
+    xhr.onreadystatechange = () => {if (xhr.readyState === 4 && xhr.status === 200) {
+        // Fetch updates including new message from db once msg is sent
+        // We don't want to just add the new msg directly,
+        // because if a new message was posted before, but not fetched,
+        // they'll be out of order
+        if (current_page === 0) {
+            fetchUpdates(false);
+        } else {
+            // If user isn't on the first page, go home to see the latest messages,
+            // If we try to fetch on some random page, every message on more recent pages will be smushed onto
+            // the current page
+            window.location = window.location.href.split(/[?#]/)[0];
+        }
+    }};
+    xhr.send(formData);
+
+    // Clears all the form inputs
+    form.reset();
+
+    // returns false so form won't send twice
+    return false;
 }
 
 const PER_PAGE = 50;
