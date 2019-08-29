@@ -1,0 +1,114 @@
+
+body {
+	font: medium Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
+	overflow-x: hidden;
+	padding: 0px;
+	margin: 0px;
+}
+
+header {
+	text-align: center;
+	height: 200px;
+	background: url("../img/plain.jpg") center/cover no-repeat;
+}
+
+header img {
+	height: 100%;
+}
+
+nav {
+	background-color: orangered;
+	text-align: center;
+	padding: 2px 0px;
+}
+
+nav img {
+	display: inline;
+	height: 80px;
+}
+
+nav ul {
+	list-style-type: none;
+	padding: 0px;
+}
+
+nav ul li {
+	display: inline;
+	padding: 0px 15px;
+}
+
+nav ul li a.selected {
+	border-bottom: 1px solid white;
+}
+
+nav ul li a {
+	text-decoration: none;
+	color: white;
+}
+
+nav ul li a h2 {
+	padding: 2px 0px;
+	font-size: 120%;
+}
+
+nav ul li:hover {
+	border-radius: 10px;
+	background-color: rgba(255,255,255,0.2);
+	-webkit-transition: all .4s ease-in-out;
+}
+
+.story {
+	width: 200px;
+	height: 260px;
+	display: inline-table;
+	padding: 15px;
+	margin: 20px;
+	background-color: beige;
+	border: 1px black solid;
+}
+
+.story a {
+	text-decoration: none;
+	color: black;
+}
+
+
+footer {
+	background-color: orangered;
+	text-align: center;
+	padding: 2px 0px;
+	color: white;
+}
+
+#login-form {
+	margin: 20px 0px;
+	padding: 20px 0px;
+	text-align: center;
+	font-size: 120%;
+}
+
+#login-form input {
+	font-size: 120%;
+	margin: 10px 0px;
+}
+
+#login-form button {
+	font-size: 120%;
+}
+
+#login-form #message {
+	color: red;
+}
+
+.parallax {
+	width: 100%;
+	height: 400px;
+	background: -webkit-linear-gradient(top,transparent,orangered), url("../img/llamaland.jpg") top/cover no-repeat fixed;
+}
+
+#editor {
+	text-align: center;
+	margin: 50px 200px;
+	line-height: 1.8em;
+}
+

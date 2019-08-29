@@ -1,0 +1,16 @@
+
+
+.feature .content {
+    -webkit-transition: padding 0.1s;
+    transition: padding 0.1s;
+}
+.feature:hover .content {
+    -webkit-transition: padding 0.4s;
+    transition: padding 0.4s;
+}
+.feature.left:hover .content {
+    padding-left: 1em;
+}
+.feature.right:hover .content {
+    padding-right: 1em;
+}

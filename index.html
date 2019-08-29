@@ -1,55 +1,152 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<link rel="stylesheet" type="text/css" href="style.css">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>puffyboa.xyz</title>
-		<link href="https://fonts.googleapis.com/css?family=Raleway|Source Sans Pro" rel="stylesheet">
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="shortcut icon" href="assets/img/favicon.png" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<link rel="stylesheet" href="assets/css/mystyle.css" />
 	</head>
-	<body>
-		<nav>
-			<ul>
-				<li>Home</li>
-				<li>Projects</li>
-			</ul>
-		</nav>
-		<div id="main">
-			<div class="jumbotron">
-				<h1>puffyboa.xyz</h1>
-				<div id="fidget-container">
-					<canvas id="fidget" width="250px" height="250px"></canvas>
+	<body class="is-preload">
+
+		<!-- Header -->
+			<div id="header">
+				<span class="logo icon solid fa-terminal"></span>
+				<h1>This is puffyboa.xyz</h1>
+				<p>My website; a menagerie of fun/useful web applications.</p>
+			</div>
+
+		<!-- Main -->
+			<div id="main">
+
+				<header class="major container medium">
+					<div id="fidget-container">
+						<canvas id="fidget" width="250px" height="250px"></canvas>
+					</div>
+					<h2>This fidget spinner spins</h2>
+				</header>
+
+				<div class="box alt container">
+					<section class="feature left">
+						<a href="/projects/apedia/" class="image icon solid fa-book"><img src="images/apedia.jpg" alt="" /></a>
+						<div class="content">
+							<h3>APedia</h3>
+							<p>Crowd-sourced Q and A for AP classes</p>
+						</div>
+					</section>
+					<section class="feature right">
+						<a href="/projects/openchat/" class="image icon solid fa-envelope"><img src="images/openchat.jpg" alt="" /></a>
+						<div class="content">
+							<h3>OpenChat</h3>
+							<p>A NEW and IMPROVED open ledger for posting anonymous public messages</p>
+						</div>
+					</section>
+					<section class="feature left">
+						<a href="/hha-grades/" class="image icon solid fa-graduation-cap"><img src="images/hha-grades.jpg" alt="" /></a>
+						<div class="content">
+							<h3>HHA Grades</h3>
+							<p>Easy grade checker for Haas Hall scholars</p>
+						</div>
+					</section>
+					<section class="feature right">
+						<a href="/projects/chemcalc/" class="image icon solid fa-flask"><img src="images/chemcalc.jpg" alt="" /></a>
+						<div class="content">
+							<h3>ChemCalc</h3>
+							<p>Calculate thermodynamic properties of chemical equations and molecules (AP Chem)</p>
+						</div>
+					</section>
+					<section class="feature left">
+						<a href="/projects/audiovisual/" class="image icon solid fa-music"><img src="images/audiovisual-js.jpg" alt="" /></a>
+						<div class="content">
+							<h3>Audiovisual.js</h3>
+							<p>Simplified web version of my <a href="https://github.com/puffyboa/audiovisual_v3">audiovisual</a> project to visualize your music files with particle animations</p>
+						</div>
+					</section>
+					<section class="feature right">
+						<a href="/projects/speedreed/" class="image icon solid fa-book-reader"><img src="images/speedreed.jpg" alt="" /></a>
+						<div class="content">
+							<h3>Speedreed</h3>
+							<p>Browse and read a collection of my favorite books with speed</p>
+						</div>
+					</section>
+					<section class="feature left">
+						<a href="/projects/wireworld/" class="image icon solid fa-car-battery"><img src="images/wireworld.jpg" alt="" /></a>
+						<div class="content">
+							<h3>WireWorld</h3>
+							<p>My implementation of the popular Turing-complete cellular automaton to simulate electronic logic elements</p>
+						</div>
+					</section>
+					<section class="feature right">
+						<a href="/projects/lucas_gifs/" class="image icon solid fa-images"><img src="images/pic02.jpg" alt="" /></a>
+						<div class="content">
+							<h3>Lucas Gifs</h3>
+							<p>Something (terrible) from middle school</p>
+						</div>
+					</section>
+				</div>
+
+				<footer class="major container medium">
+					<h3>And that's not all</h3>
+					<p>Haha, yes it is.</p>
+					<ul class="actions special">
+						<li><a href="#" class="button">Go back to the top</a></li>
+					</ul>
+				</footer>
+
+			</div>
+
+		<!-- Footer -->
+			<div id="footer">
+				<div class="container medium">
+
+					<header class="major last">
+						<h2>Want to send me an email?</h2>
+					</header>
+
+					<p>Here, you can send me an email. Note that the form below doesn't work, so you'll have to use
+						<a href="mailto:julian@sankergroup.org">julian@sankergroup.org</a>.</p>
+
+					<form method="post" action="contact.php">
+						<div class="row">
+							<div class="col-6 col-12-mobilep">
+								<input type="text" name="name" placeholder="Name" required />
+							</div>
+							<div class="col-6 col-12-mobilep">
+								<input type="email" name="email" placeholder="Email" required />
+							</div>
+							<div class="col-12">
+								<textarea name="message" placeholder="Message" rows="6" required></textarea>
+							</div>
+							<div class="col-12">
+								<ul class="actions special">
+									<li><input type="submit" value="Send Message" /></li>
+								</ul>
+							</div>
+						</div>
+					</form>
+
+					<ul class="icons">
+						<li><a href="https://github.com/puffyboa/" class="icon brands fa-github"><span class="label">Github</span></a></li>
+					</ul>
+
+					<ul class="copyright">
+						<li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+					</ul>
+
 				</div>
 			</div>
 
-			<canvas id="canvas-of-life">
-			</canvas>
+		<!-- Scripts -->
 
+			<script type="module" src="assets/js/fun/fidget.js"></script>
+			<script type="module" src="assets/js/fun/script.js"></script>
 
-			<section id="projects">
-				<h1>Projects</h1>
-				<ul>
-					<li id="apedia"><h2><a href="/apedia/"><span class="A">A</span><span class="P">P</span>edia</a></h2><p>Crowd-sourced Q and A for AP classes</p></li>
-					<li><a href="/openchat/">OpenChat</a><p>A NEW and IMPROVED open ledger for posting anonymous public messages</p></li>
-					<li><a href="/hha-grades/">HHA Grades</a><p>Easy grade checker for Haas Hall scholars</p></li>
-					<li><a href="/chemcalc/">ChemCalc</a><p>Calculate thermodynamic properties of chemical equations and molecules (AP Chem)</p></li>
-					<li><a href="/audiovisual/">Audiovisual.js</a><p>Simplified web version of my <a href="https://github.com/puffyboa/audiovisual_v3">audiovisual</a> project to visualize your music files with hip particle animations</p></li>
-					<li><a href="/speedreed/">Speedreed</a><p>Browse and read a collection of my favorite books with new speed reading method</p></li>
-					<li><a href="/wireworld/">WireWorld</a><p>My implementation of the popular Turing-complete cellular automaton to simulate electronic logic elements</p></li>
-					<li><a href="/lucas_gifs/">Lucas Gifs</a><p>Something (terrible) from middle school</p></li>
-				</ul>
-			</section>
-
-			<footer>
-				<a href="https://github.com/puffyboa/"><img alt src="assets/img/github.png"></a>
-			</footer>
-		</div>
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
 
 	</body>
-
-	<script type="module" src="assets/js/conway.js"></script>
-	<script type="module" src="assets/js/fidget.js"></script>
-	<script type="module" src="assets/js/script.js"></script>
-
 </html>
-
