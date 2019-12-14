@@ -14,3 +14,23 @@
 .feature.right:hover .content {
     padding-right: 1em;
 }
+
+.feature .image.special {
+}
+.feature .image.special img {
+    height: 70%;
+    min-height: auto;
+    min-width: auto;
+    position: relative;
+    margin: 12% auto;
+
+    -webkit-transition: all 0.1s;
+    transition: all 0.1s;
+}
+.feature .image.special:hover img {
+    height: 80%;
+    margin: 8% auto;
+
+    -webkit-transition: all 0.1s;
+    transition: all 0.1s;
+}
