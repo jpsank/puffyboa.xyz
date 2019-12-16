@@ -15,6 +15,7 @@ session_start();
 <head>
     <link rel="stylesheet" type="text/css" href="../../assets/css/shared.css">
     <link rel="stylesheet" type="text/css" href="style.css">
+    <meta name="description" content="Crowd-sourced Q and A for AP classes">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>APedia - puffyboa.xyz</title>
     <link rel="shortcut icon" href="../../assets/img/favicon.png" />

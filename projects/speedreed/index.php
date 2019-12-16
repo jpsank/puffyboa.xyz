@@ -39,6 +39,7 @@ foreach($folders as $folder) {
     <link rel="stylesheet" type="text/css" href="../../assets/css/shared.css">
     <link rel="stylesheet" type="text/css" href="style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Browse and read a collection of my favorite books with speed">
     <title>Speedreed - puffyboa.xyz</title>
     <link rel="shortcut icon" href="../../assets/img/favicon.png" />
 </head>

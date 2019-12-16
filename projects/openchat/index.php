@@ -41,6 +41,7 @@ if (isset($_POST['text'])) {
 
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="An open ledger for posting anonymous public messages">
     <link rel="stylesheet" type="text/css" href="../../assets/css/shared.css">
 	<link rel="stylesheet" type="text/css" href="style.css">
 	<title>OpenChat - puffyboa.xyz</title>
