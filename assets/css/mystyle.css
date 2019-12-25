@@ -15,6 +15,10 @@
     padding-right: 1em;
 }
 
+.feature .image.black {
+    background-color: black;
+}
+
 .feature .image.special {
 }
 .feature .image.special img {
