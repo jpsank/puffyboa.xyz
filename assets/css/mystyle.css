@@ -1,39 +1,52 @@
 
 
-.feature .content {
-    -webkit-transition: padding 0.1s;
-    transition: padding 0.1s;
+.feature.small {
+    max-height: 250px;
+    margin: 0 50px;
 }
-.feature:hover .content {
-    -webkit-transition: padding 0.4s;
-    transition: padding 0.4s;
+.feature.small .image img {
+    width: 100%;
+    height: 100%;
 }
-.feature.left:hover .content {
-    padding-left: 1em;
+.feature.small div.content {
+    padding: 10px 30px;
 }
-.feature.right:hover .content {
-    padding-right: 1em;
+@media (max-width: 900px) {
+    .feature.small {
+        max-height: none;
+    }
+    .feature.small .content {
+        border: none;
+    }
 }
+@media (max-width: 700px) {
+    .feature.small .image {
+        height: 150px;
+    }
+}
+
 
 .feature .image.black {
     background-color: black;
 }
-
-.feature .image.special {
+.feature .image.clear:after {
+    background-image: none;
 }
+
 .feature .image.special img {
-    height: 70%;
+    height: 80%;
     min-height: auto;
     min-width: auto;
+    max-width: 100%;
     position: relative;
-    margin: 12% auto;
+    margin: 8% auto;
 
     -webkit-transition: all 0.1s;
     transition: all 0.1s;
 }
 .feature .image.special:hover img {
-    height: 80%;
-    margin: 8% auto;
+    height: 100%;
+    margin: 0 auto;
 
     -webkit-transition: all 0.1s;
     transition: all 0.1s;
